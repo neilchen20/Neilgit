@@ -27,7 +27,7 @@ import FeaturedProjects from '../components/Projects/FeaturedProjects.vue'
 import { nextTick, onMounted } from 'vue'
 import axios from 'axios'
 import AOS from 'aos'
-import { useProjectsStore } from '../stores/projectsStore.js'
+import { useProjectsStore } from '../stores/ProjectsStore.js'
 
 const projectsStore = useProjectsStore()
 

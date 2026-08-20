@@ -10,7 +10,7 @@ import geecProduct from '../assets/img/Projects/geec.png'
 import jmrqProduct from '../assets/img/Projects/jmrq.png'
 import kiriProduct from '../assets/img/Projects/kiri.png'
 import mcidemoProduct from '../assets/img/Projects/mcidemo.png'
-import cloudHISProject from '../assets/img/Projects/cloudHIS.png'
+import cloudHISProject from '../assets/img/Projects/cloudhis.png'
 
 
 export const useProjectsStore = defineStore('projects', () => {
