@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <script src="./js/jquery-3.5.1.min.js"></script>
+    <script src="./datatable/js/1.12.1jquery.dataTables.min.js"></script>
+    <script src="./datatable/js/2.3.0dataTables.responsive.min.js"></script>
+    <link rel="stylesheet" href="./datatable/css/dataTable.css">
+    <link rel="stylesheet" href="./datatable/css/responsive.dataTables.min.css">
+    <link rel="shortcut icon" href="./material/icon.ico">
+    <link rel="stylesheet" href="./css/mcistyle.css">
+    <title>大量傷病患救護管理系統</title>
+    <style>
+.modal {
+  position: fixed;
+  margin-top: 4.5%;
+  margin-left: 5%;
+  width: 500px;
+  height: 80px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.805);
+  color:aliceblue;
+  z-index: 5;
+}
+
+@media (max-width: 600px){
+  .modal {
+    position: fixed;
+    margin-top: 4.5%;
+    margin-left: 5%;
+    width: 80%;
+    height: 10%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.911);
+    color:aliceblue;
+    z-index: 5;
+  }
+  
+}
+</style>
+</head>
+<body id="body">
+  <header>
+    <div id="logodiv" class="left">
+      <a onclick="location.reload()"><img src="material/LOGO.png" title="回首頁" id="rwdlogo"></a>
+    </div>
+    <button id="logout" class="custom-btn right" onclick="home()">回到我的網站</button>
+    <button id="caselist" class="custom-btn right" onclick="location.reload()">案件列表</button>
+    <button id="APP" class="custom-btn right"  onclick="app()">APP下載</button>
+    <button id="station_title" class="custom-btn right patient_page" style="display: none;" onclick="back_station_btn()">救護站列表</button>
+    <div id="timeid" class="right">
+      最後更新：<span id="timenow"></span>
+    </div>
+    <div id="modal" class="modal">
+      <div class="modal-content"></div>
+    </div>
+  </header>
+  <main>
+    <div id="main_caselist">
+      <div id="dateperiod" class="right"><div class="right" id="county">案發縣市：<select id="sel_county" onchange="filt_case()"><option selected value='全部'>全部</option></select></div><div class="left" id="date">日期區間：<input type="date" class="sedate" id="sdate" onchange="filt_case();sel_county_renew()">到<input type="date" class="sedate" id="edate" onchange="filt_case();sel_county_renew()"></div></div>
+      <div id="main_table" class="left">
+        <table id="data_table" class="display dtr-control"></table>
+      </div>
+    </div>
+    <footer id="footer">
+      <img src="material/patient.png" id="bg_peo">
+    </footer>
+    <div id="main_BNdiv">
+      <div id="statistics" class="left">
+        <div class="lstatistics left">大傷案件：<a id="casePushNAME"></a></div>
+        <div class="rstatistics left">目前狀態：<a id="casePushSTATE"></a></div>
+        <div class="lstatistics left">大傷案號：<a id="casePushID"></a></div>
+        <div class="rstatistics left">案發縣市：<a id="casePushCOUNTY"></a></div>
+        <div class="lstatistics left">開案時間：<a id="casePushTIME"></a></div>
+        <div class="rstatistics left">案發時間：<a id="casePushCASETIME"></a></div>
+        <div class="lstatistics left patient_page" id="statistics_staname">救護站名：<a id="stationPushNAME"></a></div>
+      </div>
+      <div id="colordata" class="left">
+        <div id="colorcube">
+          <div id="gray" class="cube left">總計<a id="pushgary_data"></a></div>
+          <div class="cube left black"><a id="pushohca_data"></a></div>
+          <div class="cube left red"><a id="pushred_data"></a></div>
+          <div class="cube left orange"><a id="pushorg_data"></a></div>
+          <div class="cube left greenyellow"><a id="pushgre_data"></a></div>
+        </div>
+        <div id="onsitedata">
+          <div id="ondata">現場數據</div>
+          <div class="anvalue left" style="margin-left: 115px;">
+            <button class="black point"></button>比例：<a id="pushohca_value"></a>%
+          </div>
+          <div class="anvalue left">
+            <button class="red point"></button>
+            <button class="orange point"></button>
+            <button class="greenyellow point"></button>比例：<a id="pushrog_value"></a>%
+          </div>
+          <div class="anvalue left">總送醫比例：<a id="pushtotal_value"></a>%</div>
+        </div>
+      </div>
+      <div id="indatabox_s" class="left">
+        <div id="indatarwd" class="left">傷患後送數據</div>
+        <div id="indata_all">
+          <div id="indata1" class="indatabox_s_box left">
+            <div class="indatabox_l_box_icon left"><img src="material/data_1@2x.png"></div>
+            <div class="indatabox_l_value_s ">
+              <a class="green">後送中人數</a><br> 
+              <a id="pushenroute_valuepho" class="indatabox_l_value_s"></a>人(<a id="pushenroute_ppho" class="indatabox_l_value_s"></a>%)
+            </div>      
+          </div>
+          <div id="indata2" class="indatabox_s_box left">
+            <div class="indatabox_l_box_icon left"><img src="material/data_2@2x.png"></div>
+            <div class="indatabox_l_value_s ">
+              <a class="green">到院人數</a><br> 
+              <a id="pusharrive_valuepho" class="indatabox_l_value_s"></a>人(<a id="pusharrive_ppho" class="indatabox_l_value_s"></a>%)
+            </div>
+          </div>
+          <div id="indata3" class="indatabox_s_box left">
+            <div class="indatabox_l_box_icon left"><img src="material/data_3@2x.png"></div>
+            <div class="indatabox_l_value_s ">
+              <a class="green">未送醫人數</a><br> 
+              <a id="pushnothos_valuepho" class="indatabox_l_value_s"></a>人(<a id="pushnothos_ppho" class="indatabox_l_value_s"></a>%)
+            </div>
+          </div>
+          <div id="indata4" class="indatabox_s_box left">
+            <div class="indatabox_l_box_icon left"><img src="material/data_4@2x.png"></div>
+            <div class="indatabox_l_value_s ">
+              <a class="green">後送車輛數</a><br> 
+              <a id="pusharrveh_valuepho" class="indatabox_l_value_s"></a>臺
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="container" class="left">
+        <div  id="indatabox_l">
+          <div id="straight">傷患後送數據</div>
+          <div class="indatabox_l_box">
+            <div class="indatabox_l_box_icon left"><img src="material/data_1@2x.png"></div>
+            <div class="indatabox_l_value ">
+              <a class="green">後送中人數</a><br> 
+              <a id="pushenroute_value" class="indatabox_l_value"></a>人(<a id="pushenroute_p" class="indatabox_l_value"></a>%)
+            </div>
+          </div>
+          <div class="indatabox_l_box">
+            <div class="indatabox_l_box_icon left"><img src="material/data_2@2x.png"></div>
+            <div class="indatabox_l_value ">
+              <a class="green">到院人數</a><br> 
+              <a id="pusharrive_value" class="indatabox_l_value"></a>人(<a id="pusharrive_p" class="indatabox_l_value"></a>%)
+            </div>
+          </div>
+          <div class="indatabox_l_box">
+            <div class="indatabox_l_box_icon left"><img src="material/data_2@2x.png"></div>
+            <div class="indatabox_l_value ">
+              <a class="green">未送醫人數</a><br> 
+              <a id="pushnothos_value" class="indatabox_l_value"></a>人(<a id="pushnothos_p" class="indatabox_l_value"></a>%)
+            </div>
+          </div>
+          <div class="indatabox_l_box">
+            <div class="indatabox_l_box_icon left"><img src="material/data_2@2x.png"></div>
+            <div class="indatabox_l_value ">
+              <a class="green">後送車輛數</a><br> 
+              <a id="pusharrve_value" class="indatabox_l_value"></a>臺
+            </div>
+          </div>
+        </div>
+        <div id="pagediv" class='patient_page'>
+          <div id="patient" class="nav-item nav-item_selected left" onclick="changepage('patient')">傷病患清單</div>
+          <div id="hos" class="nav-item left" onclick="changepage('hos')">後送醫院收治情形</div>
+        </div>
+          <div id="tab-content" class="left">
+            <div id="home" class="changepage patient_page">
+              <div id="selectBTN">
+                <div id="selectL" class="left">傷票級別
+                  <img id="select_all_triage" class="select_triage" src="material/select_all_triage.png" title="全部" onclick="select_toggle('select_all_triage')">
+                  <img id="select_ohca" class="select_triage" src="material/square_select_ohca_true.png" title="OHCA" onclick="select_toggle('select_ohca')">
+                  <img id="select_red" class="select_triage" src="material/square_select_red_true.png" title="極危險" onclick="select_toggle('select_red')">
+                  <img id="select_org" class="select_triage" src="material/square_select_org_true.png" title="危險" onclick="select_toggle('select_org')">
+                  <img id="select_gre" class="select_triage" src="material/square_select_gre_true.png" title="輕傷" onclick="select_toggle('select_gre')">
+                </div>
+                <div id="selectR" class="left">
+                  <button id="select_all" class="select_state" onclick="select_state('select_all')">全部</button>
+                  <button id="select_onsite" class="select_state" onclick="select_state('select_onsite')">現場</button>
+                  <button id="select_enroute" class="select_state" onclick="select_state('select_enroute')">送醫中</button>
+                  <button id="select_arr" class="select_state" onclick="select_state('select_arr')">已到院</button>
+                </div>
+              </div>                                          
+              <table id="patient_table" class="display dtn-conrtol"></table>
+              <div id="myModal" style="display: none;">
+                  <div id="hide" onclick="hidebox('myModal')"></div>
+                  <div id="modal-content">
+                    <div id="largepicdiv"></div>
+                    <div id="largepicchoosediv" class="scrollho"></div>
+                  </div>
+              </div>
+              <div id="myamrecord" style="display: none;">
+                <div id="hide" onclick="hidebox('myamrecord')"></div>
+                <div id="amrecord-content">
+                  <div id="record"></div>
+                </div>
+              </div>
+              <div id="idfeature" class="feature" style="display: none;">
+                <div id="hide" onclick="hidebox('idfeature')"></div>
+                <div id="feature-content">
+                  <div id="situation">
+                    <div id="sitone" class="left">
+                      <a id="sittitle">傷患評估</a>
+                      <div class="injevediv"><a class="injeveAId">檢傷編碼:</a><br class="sibr"><a class="injeveAId_text" id="injeveID"></a></div>
+                      <div class="injevediv"><a class="injeveAId">姓名:</a><br class="sibr"><a class="injeveAId_text" id="injeveNAME"></a></div>
+                      <div class="injevediv"><a class="injeveAId">電話:</a><br class="sibr"><a class="injeveAId_text" id="injevePHONE"></a></div>
+                      <div class="injevediv"><a class="injeveAId">性別:</a><br class="sibr"><a class="injeveAId_text" id="injeveSEX"></a></div>
+                      <div class="injevediv"><a class="injeveAId">年齡:</a><br class="sibr"><a class="injeveAId_text" id="injeveAGE"></a></div>
+                    </div>
+                    <div id="sitline" class="left">
+                      <div class="sitright">
+                        <div class="sittoptitle">特徵說明</div>
+                        <div id="sittop" class="sit"></div>
+                      </div>
+                      <div class="sitright">
+                        <div class="sittoptitle">補充說明</div>
+                        <div id="sitdown" class="sit"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="menu1" class="changepage patient_page">
+            </div>
+            <div id="station_content" class="station_page">
+                <div class="right" id="station_date">日期區間：<div id="station_date_input"><input type="datetime-local" class="sedate" id="station_sdate" onchange="filt_station()"><div>到<input type="datetime-local" class="sedate" id="station_edate" onchange="filt_station()"></div></div></div>
+                <table id="station_table" class="display dtn-conrtol"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+  </main>
+    
+  <script type=text/javascript>
+  
+    const renewt = 5000;
+    const county_order=["基隆市","臺北市","台北市","新北市","桃園市","新竹市","新竹縣","苗栗縣","臺中市","台中市","彰化縣","南投縣","雲林縣",
+                  "嘉義市","嘉義縣","臺南市","台南市","高雄市","屏東縣","臺東縣","台東縣","宜蘭縣","花蓮縣","澎湖縣","金門縣","連江縣"]
+    var minDate='0000/00/00 00:00:00';
+    var maxDate='9999/99/99 99:99:99';
+    var station_minDate='0000/00/00 00:00:00';
+    var station_maxDate='9999/99/99 99:99:99';
+    var case_table;
+    var station_table;
+    var patient_table;
+    var hos_table;
+    var datalist;
+    var present_datalist_list=[];
+    var date_datalist=[];
+    var present_datalist=[];
+    var case_id;
+    var stationdata={};
+    var present_stationdata=[];
+    var present_stationdata_list=[];
+    var station_num;
+    var filter_triage=['select_ohca','select_red','select_org','select_gre','']
+    var filter_state=["select_onsite",'select_enroute','select_arr','']
+    var present_patientdata_list=[];
+    var patientdata={};
+    var present_patientdata=[];
+    var pagination='home';
+    var hos_data=[];
+    var select_pid='';
+    function home() {
+      window.location.href = 'https://neilchen.dev'
+    }
+    function getRandom(min,max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    };
+    function getRandomPhone() {
+      let randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
+      let phoneNumber = "09" + randomNumber.toString();
+      return phoneNumber;
+    }
+    function getTime(yearr,monthh,dayy,hourr,minn,ss){
+        var time=new Date();
+        var year=time.getFullYear();
+        var month=time.getMonth();
+        var day=time.getDate();
+        var hour=time.getHours();
+        var min=time.getMinutes();
+        var s=time.getSeconds();
+        time=new Date(year-yearr,month-monthh,day-dayy,hour-hourr,min-minn,s-ss);
+        return time.toLocaleString('chinese',{hour12:false});
+    }
+    function random_change(num1, num2) {  
+        var sum = 0, x = 0, random = Math.random();
+        for(var i = num2.length - 1; i >= 0; i--) {
+            sum += num2[i];
+        };
+        random *= sum;
+        for(var i = num2.length - 1; i >= 0; i--) {
+            x += num2[i];
+            if(random <= x)
+            return num1[i];
+        };  
+        return null;
+      };
+    getRandomData()
+    function getRandomData() {
+      random_case_table_data = [];
+      random_station_table_data = [];
+      random_patient_table_data = [];
+      Array(12).fill().forEach((_, i) => {
+        case_time = getTime(0,Math.floor(Math.random()*(8-2+1))+5,Math.floor(Math.random()*(10-0+1))+0,Math.floor(Math.random()*(24-0+1))+0,Math.floor(Math.random()*(60-0+1))+0,Math.floor(Math.random()*(60-0+1))+0);
+        random_case_table_data.push({
+          o:"",
+          case_id: 202300000+(i+1),
+          case_name: ['區間遊覽車追撞案','釣蝦場火災案','瓦斯外洩案','巷口偷竊致傷案','陽明山硫磺案','海灘跌傷事件','民權路口機車車禍','土石坍方走山事件','區間測速自小客撞山','北方酒駕車禍OHCA','產業道路車輛墜崖案','大地震房屋倒塌'][Math.floor(Math.random() * 12)],
+          case_county: ['台北市','新北市','基隆市','桃園市','宜蘭縣','花蓮市'][Math.floor(Math.random() * 6)],
+          case_time: case_time,
+          case_state: ['進行中','已結案'][Math.floor(Math.random() * 2)],
+          cs_startime: case_time,
+          cartotal: getRandom(0,4),
+          station:[]  
+        });
+      });
+      random_station_table_data = random_case_table_data;
+      random_station_table_data.forEach(e=>e.station.push({o:"",station_num:"00",station_name:"全部",station_stime:case_time,station_etime:'',patient:[],
+                station_totpeo:{ black: String(getRandom(0,3)),red: String(getRandom(0,7)),orange: String(getRandom(0,7)),green: String(getRandom(0,7))},
+                station_nohos: { black: String(getRandom(0,2)), red: String(getRandom(0,3)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+                station_rouhos: { black: String(getRandom(0,1)), red: String(getRandom(0,2)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+                station_inhos: { black: String(getRandom(0,0)), red: String(getRandom(0,1)), orange: String(getRandom(0,3)), green: String(getRandom(0,2)) }
+              },
+              {o:"",station_num:"01",station_name:"第一救護站",station_stime:case_time,station_etime:'',patient:[],
+                station_totpeo:{ black: String(getRandom(0,2)),red: String(getRandom(0,5)),orange: String(getRandom(0,6)),green: String(getRandom(0,4))},
+                station_nohos: { black: String(getRandom(0,1)), red: String(getRandom(0,3)), orange: String(getRandom(0,1)), green: String(getRandom(0,1)) },
+                station_rouhos: { black: String(getRandom(0,1)), red: String(getRandom(0,2)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+                station_inhos: { black: String(getRandom(0,0)), red: String(getRandom(0,0)), orange: String(getRandom(0,3)), green: String(getRandom(0,2)) }
+              }))
+      if(getRandom(0,1)==1)
+      {
+        random_station_table_data.forEach(e => e.station.push({o:"",station_num:"02",station_name:"第二救護站",station_stime:getTime(0,0,0,0,0,0),station_etime:'',patient:[],
+          station_totpeo:{ black: String(getRandom(0,2)),red: String(getRandom(0,5)),orange: String(getRandom(0,6)),green: String(getRandom(0,4))},
+          station_nohos: { black: String(getRandom(0,1)), red: String(getRandom(0,3)), orange: String(getRandom(0,1)), green: String(getRandom(0,1)) },
+          station_rouhos: { black: String(getRandom(0,1)), red: String(getRandom(0,2)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+          station_inhos: { black: String(getRandom(0,0)), red: String(getRandom(0,0)), orange: String(getRandom(0,3)), green: String(getRandom(0,2)) }
+        }))
+      } 
+      else{
+        setTimeout(function () {
+          if (pagination=="station") {
+            random_station_table_data.forEach(e => e.station.push({o:"",station_num:"02",station_name:"第二救護站",station_stime:getTime(0,0,0,0,0,0),station_etime:'',patient:[],
+              station_totpeo:{ black: String(getRandom(0,2)),red: String(getRandom(0,5)),orange: String(getRandom(0,6)),green: String(getRandom(0,4))},
+              station_nohos: { black: String(getRandom(0,1)), red: String(getRandom(0,3)), orange: String(getRandom(0,1)), green: String(getRandom(0,1)) },
+              station_rouhos: { black: String(getRandom(0,1)), red: String(getRandom(0,2)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+              station_inhos: { black: String(getRandom(0,0)), red: String(getRandom(0,0)), orange: String(getRandom(0,3)), green: String(getRandom(0,2)) }
+            }))
+          }
+        },5000)
+      }
+      random_patient_table_data = random_station_table_data
+      for (let i = 0; i<random_patient_table_data.length; i++){
+        for (let j = 0; j < getRandom(2,20); j++) {
+          for (let k = 0; k < random_patient_table_data[i].station.length; k++) {
+            random_patient_table_data[i].station[k].patient.push({
+              o:"",
+              id: getRandom(23000000,23999999),
+              state: ['OHCA','極危險','危險','輕傷'][Math.floor(Math.random() * 4)],
+              name: ['陳小紅','陳肉桂','Banana cookie','Fish man','黃大武','方小三','李強強','Mark man','李娜','黃春純', '林明軒', '吳欣茹', '詹麗珠', '劉偉倫', '王怡如', '鄭雅民', '蔡玟生', '陳世辛', '方儀清', '劉如發', '梁恆白', '沈肇甫', '段揚伸', '黃夢意', '張瑞貴', '王玉華', '賴吟光', '夏信珠', '呂佳芷', '鐘雅萍', '吳佩萱', '林姿蓉', '陳奕剛', '潘吉行', '程芳寧', '蘇于坤', '袁月良','蔡尚威', '黃子芸', '吳豐秀','王子軒', '李美珍', '林竣慈', '鄧子芸', '王思意', '王彥翔', '黃林燦', '王彥枝', '王陽忠', '陳銘霞', '璩亮函', '陳冠松', '陳品正', '林志倩', '張文彥', '黃彥孝', '魏炳寶', '林妙榮', '黃欣琪', '葉振華', '丁皓民', '蔡嘉恭', '許雅仁', '皇甫紹佐', '黃雅雅', '劉牧育', '林旻淳', '黃雅筑', '黃筱芸', '夏雅婷', '黃佩珊', '沈怡婷', '陳可南', '吳欣其', '林麗琪', '林冠中', '黃春云', '韓皇燕', '陳正以', '喬念花', '張志瑋', '蔡宜剛', '柳紋愛', '高佳靜', '林上睿', '方禮菱', '黎夙茹', '岑筱睿', '陳伶發', '呂政宏', '張怡雯', '游萱臻', '陳柏麟', '藍政憲', '楊國榮', '陳婉婷', '陳美惠', '侯佳伶', '趙毅舜', '蔡筱婷', '黃欣怡', '吳慈方', '周雅君', '徐惠雯', '龔婉君', '王冠霞', '林宜靜', '宓宜順', '蕭竣傑', '黃裕翔', '周美君', '林孟雲', '廖筱雯', '鄭建文', '姚維倫', '黃郁州', '吳鈞旭', '林淑敏', '黃財新', '顏惠君', '顏柏豪', '許牧毓', '陳靜宜', '曾妍茹', '陳宜君', '翁雅惠', '黃鈺青', '姚志翔', '陳可欣', '蔡靜宜', '張承翰', '林書瑋', '李文意', '郎冠宇', '侯允淑', '陳國榮', '林信華'][Math.floor(Math.random() * 137)],
+              sex: ['男','女'][Math.floor(Math.random() * 2)],
+              age: getRandom(2,85),
+              loca: ['已到院','送醫中','現場','',''][Math.floor(Math.random() * 5)],
+              car: ['臺安23','臺安37','耕莘93','聯合12','振興51','北醫33','慈濟3','慈濟91','國泰61','三軍88','三軍77','聯合2','慈濟1','','','','','','','','','','','',''][Math.floor(Math.random() * 25)],
+              hos: ['臺安','耕莘','馬偕','國泰','三軍','聯合','振興','北醫','慈濟','','','','','','','','','','',''][Math.floor(Math.random() * 20)],
+              hos_level: ['重度','中度','輕度',''][Math.floor(Math.random() * 4)],
+              levtime: [case_time,''][Math.floor(Math.random() * 2)],
+              arrtime: [case_time,''][Math.floor(Math.random() * 2)],
+              pho: [ "./material/1.jpeg", "./material/2.jpeg", "./material/3.jpeg", "./material/4.jpeg", "./material/5.jpeg", "./material/6.jpeg", "./material/7.jpeg", "./material/8.jpeg", "./material/9.jpeg", "./material/10.jpeg", "./material/11.jpeg", "./material/12.jpeg" ][Math.floor(Math.random() * 12)],
+              recor: [ "./material/recor_expdf.pdf", ""][Math.floor(Math.random() * 2)],
+              injevePHONE: getRandomPhone(),
+              featureR: ['腳部韌帶損傷','左手姆指骨折','頭部、右腳擦挫傷','','','','右手臂遭刺穿','左靴掉落','鼻子擦挫傷','眼鏡破裂','手錶破裂','','左腳拖鞋掉落，食指指甲脫落','','','','','請簡述說明','請簡述說明','無','無'][Math.floor(Math.random() * 21)],
+              featureRD: ['長髮','短髮','皮膚黑','身高180上下','','請簡述說明','請簡述說明','無','無','請簡述說明','','生命徵象穩定'][Math.floor(Math.random() * 12)],
+              hosspace: getRandom(1,10)
+            });
+          }
+        }
+      }
+      case_table_data = random_case_table_data.sort((a, b) => new Date(b.case_time) - new Date(a.case_time));
+      station_table_data = random_station_table_data;
+      random_patient_table_data.forEach(e=>patient_table_data = e.station);
+    }
+    getRandomCRUD_Data()
+    function getRandomCRUD_Data() {
+      randomCRUD_case_table_data = [];
+      randomCRUD_station_table_data = [];
+      randomCRUD_patient_table_data = [];
+      Array(50).fill().forEach((_, i) => {
+        var case_time = getTime(0,Math.floor(Math.random()*(5-0+1))+0,Math.floor(Math.random()*(15-0+1))+0,Math.floor(Math.random()*(24-0+1))+0,Math.floor(Math.random()*(60-0+1))+0,Math.floor(Math.random()*(60-0+1))+0);
+        randomCRUD_case_table_data.push({
+          o:"",
+          case_id: getRandom(202300099,202309999),
+          case_name: ['2車對撞重大車禍','國道1號車禍7傷','國1彰化段8車連環撞釀傷','1艘漁船翻覆案','立體停車場工程灌漿坍塌','小客車自撞貨車','山坡大批民眾跌傷','華廈大火災案','復星航空飛機墜機','快速道路酒駕追撞','精神病患無差別槍殺','山路地面有油釀菜車追撞','辦公大樓失火','惡人於廢墟縱火案','消防局旁失火案','國3貨車追撞油罐車連環車禍','森林大火蔓延至村莊案','電廠機具爆炸失火','工地鷹架倒塌事件','颱風路樹倒塌釀追撞','雨天路滑機車打滑連環車禍','ktv砍人多人受傷','工程車闖軌道火車翻覆','省道嚴重車禍案','自行車比賽多人摔車','多街道氣爆案','學校遭恐怖攻擊案','加油站遭縱火爆炸案','連日大雨釀土石流淹沒村莊','遊覽車市區轉彎翻車事故','油罐車高架轉彎墜樓','電廠爆炸大火','數隻大型動物逃竄釀傷亡','安荷航空失速墜機案','ktv起口角多人鬥毆事件','槍擊案多人受傷送醫','工地土石崩塌機車被埋多人受傷','觀光遊客墜谷送醫','美食節炸彈恐攻多人受傷送醫','飛行秀事故失控飛機墜毀傷重送醫','人行道坍塌多人受傷送醫','高速公路車禍乘客受傷','暴風雨侵襲多處民宅倒塌多人受傷','大樓火警多人濃煙中毒送醫','交通事故發生多車相撞多人受傷','電梯故障多人困在其中受傷','地震造成建築物倒塌多人受傷','飛行器失事乘客受傷送醫','火車相撞事故多人受傷','落石事件多人受傷','食品中毒事件多人送醫救治','煤氣爆炸多人受傷送醫','倒塌工地起重機多人受傷','廢棄物倒塌多人受傷','汽車撞上人行道多人受傷送醫急救','摩托車與貨車相撞受傷送醫','大樓內發生火警多人送醫急救','遊樂園遊具故障多人遭拋飛','馬拉松比賽途中多人因中暑受傷送醫','電單車與腳踏車相撞多人受傷送醫','樂園內碰碰車相撞多人受傷送醫','公車故障撞路旁建築多人受傷送醫','住宅發生瓦斯爆炸多人送醫急救','公車與小客車相撞多人送醫','餐廳內天花板崩落多人受傷送醫','高速公路發生連環車禍','倉庫內爆炸多人送醫','摔車男子頭部受傷送醫治療','土石流侵襲村莊多人送醫救治','病患衝突醫院保全受傷送醫'][Math.floor(Math.random() * 70)],
+          case_county: ['台北市','新北市','基隆市','桃園市','宜蘭縣','花蓮市','新竹市','高雄市','台中市','南投縣'][Math.floor(Math.random() * 10)],
+          case_time: case_time,
+          case_state: ['進行中','已結案'][Math.floor(Math.random() * 2)],
+          cs_startime: case_time,
+          cartotal: getRandom(0,4),
+          station:[]
+        });
+      });
+      randomCRUD_station_table_data = randomCRUD_case_table_data.sort((a, b) => new Date(b.case_time) - new Date(a.case_time));
+      randomCRUD_station_table_data.forEach(e=>e.station.push({o:"",station_num:"00",station_name:"全部",station_stime:getTime(0,0,0,0,0,0),station_etime:'',patient:[],
+          station_totpeo:{ black: String(getRandom(0,3)),red: String(getRandom(0,7)),orange: String(getRandom(0,7)),green: String(getRandom(0,7))},
+          station_nohos: { black: String(getRandom(0,2)), red: String(getRandom(0,3)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+          station_rouhos: { black: String(getRandom(0,1)), red: String(getRandom(0,2)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+          station_inhos: { black: String(getRandom(0,0)), red: String(getRandom(0,1)), orange: String(getRandom(0,3)), green: String(getRandom(0,5)) }
+        },
+        {o:"",station_num:"01",station_name:"第一救護站",station_stime:getTime(0,0,0,0,0,0),station_etime:'',patient:[],
+          station_totpeo:{ black: String(getRandom(0,2)),red: String(getRandom(0,5)),orange: String(getRandom(0,6)),green: String(getRandom(0,4))},
+          station_nohos: { black: String(getRandom(0,1)), red: String(getRandom(0,3)), orange: String(getRandom(0,1)), green: String(getRandom(0,1)) },
+          station_rouhos: { black: String(getRandom(0,1)), red: String(getRandom(0,2)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+          station_inhos: { black: String(getRandom(0,0)), red: String(getRandom(0,0)), orange: String(getRandom(0,3)), green: String(getRandom(0,2)) }
+      }))
+      if(getRandom(0,1)==1)
+      {
+        randomCRUD_station_table_data.forEach(e => e.station.push({o:"",station_num:"02",station_name:"第二救護站",station_stime:getTime(0,0,0,0,0,0),station_etime:'',patient:[],
+          station_totpeo:{ black: String(getRandom(0,2)),red: String(getRandom(0,5)),orange: String(getRandom(0,6)),green: String(getRandom(0,4))},
+          station_nohos: { black: String(getRandom(0,1)), red: String(getRandom(0,3)), orange: String(getRandom(0,1)), green: String(getRandom(0,1)) },
+          station_rouhos: { black: String(getRandom(0,1)), red: String(getRandom(0,2)), orange: String(getRandom(0,2)), green: String(getRandom(0,1)) },
+          station_inhos: { black: String(getRandom(0,0)), red: String(getRandom(0,0)), orange: String(getRandom(0,3)), green: String(getRandom(0,2)) }
+        }))
+      }
+      randomCRUD_patient_table_data = randomCRUD_station_table_data;
+      for (let i = 0; i<randomCRUD_patient_table_data.length; i++){ 
+        for (let j = 0; j < getRandom(2,50); j++) { 
+          for (let k = 0; k < randomCRUD_patient_table_data[i].station.length; k++) {
+            randomCRUD_patient_table_data[i].station[k].patient.push({
+              o:"",
+              id: getRandom(23000000,23999999),
+              state: ['OHCA','極危險','危險','輕傷'][Math.floor(Math.random() * 4)],
+              name: ['陳小紅','陳肉桂','Banana cookie','Fish man','黃大武','方小三','李強強','Mark man','李娜','黃春純', '林明軒', '吳欣茹', '詹麗珠', '劉偉倫', '王怡如', '鄭雅民', '蔡玟生', '陳世辛', '方儀清', '劉如發', '梁恆白', '沈肇甫', '段揚伸', '黃夢意', '張瑞貴', '王玉華', '賴吟光', '夏信珠', '呂佳芷', '鐘雅萍', '吳佩萱', '林姿蓉', '陳奕剛', '潘吉行', '程芳寧', '蘇于坤', '袁月良','蔡尚威', '黃子芸', '吳豐秀','王子軒', '李美珍', '林竣慈', '鄧子芸', '王思意', '王彥翔', '黃林燦', '王彥枝', '王陽忠', '陳銘霞', '璩亮函', '陳冠松', '陳品正', '林志倩', '張文彥', '黃彥孝', '魏炳寶', '林妙榮', '黃欣琪', '葉振華', '丁皓民', '蔡嘉恭', '許雅仁', '皇甫紹佐', '黃雅雅', '劉牧育', '林旻淳', '黃雅筑', '黃筱芸', '夏雅婷', '黃佩珊', '沈怡婷', '陳可南', '吳欣其', '林麗琪', '林冠中', '黃春云', '韓皇燕', '陳正以', '喬念花', '張志瑋', '蔡宜剛', '柳紋愛', '高佳靜', '林上睿', '方禮菱', '黎夙茹', '岑筱睿', '陳伶發', '呂政宏', '張怡雯', '游萱臻', '陳柏麟', '藍政憲', '楊國榮', '陳婉婷', '陳美惠', '侯佳伶', '趙毅舜', '蔡筱婷', '黃欣怡', '吳慈方', '周雅君', '徐惠雯', '龔婉君', '王冠霞', '林宜靜', '宓宜順', '蕭竣傑', '黃裕翔', '周美君', '林孟雲', '廖筱雯', '鄭建文', '姚維倫', '黃郁州', '吳鈞旭', '林淑敏', '黃財新', '顏惠君', '顏柏豪', '許牧毓', '陳靜宜', '曾妍茹', '陳宜君', '翁雅惠', '黃鈺青', '姚志翔', '陳可欣', '蔡靜宜', '張承翰', '林書瑋', '李文意', '郎冠宇', '侯允淑', '陳國榮', '林信華'][Math.floor(Math.random() * 137)],
+              sex: ['男','女'][Math.floor(Math.random() * 2)],
+              age: getRandom(2,85),
+              loca: ['已到院','送醫中','現場','',''][Math.floor(Math.random() * 5)],
+              car: ['臺安23','臺安37','耕莘93','聯合12','振興51','北醫33','慈濟3','慈濟91','國泰61','三軍88','三軍77','聯合2','慈濟1','','','','','','','','','','','',''][Math.floor(Math.random() * 25)],
+              hos: ['臺安','耕莘','馬偕','國泰','三軍','聯合','振興','北醫','慈濟','','','','','','','','','','',''][Math.floor(Math.random() * 20)],
+              hos_level: ['重度','中度','輕度',''][Math.floor(Math.random() * 4)],
+              levtime: [case_time,''][Math.floor(Math.random() * 2)],
+              arrtime: [case_time,''][Math.floor(Math.random() * 2)],
+              pho: [ "./material/1.jpeg", "./material/2.jpeg", "./material/3.jpeg", "./material/4.jpeg", "./material/5.jpeg", "./material/6.jpeg", "./material/7.jpeg", "./material/8.jpeg", "./material/9.jpeg", "./material/10.jpeg", "./material/11.jpeg", "./material/12.jpeg" ][Math.floor(Math.random() * 12)],
+              recor: [ "./material/recor_expdf.pdf", ""][Math.floor(Math.random() * 2)],
+              injevePHONE: getRandomPhone(),
+              featureR: ['腳部韌帶損傷','左手姆指骨折','頭部、右腳擦挫傷','','','','右手臂遭刺穿','左靴掉落','鼻子擦挫傷','眼鏡破裂','手錶破裂','','左腳拖鞋掉落，食指指甲脫落','','','','','請簡述說明','請簡述說明','無','無'][Math.floor(Math.random() * 21)],
+              featureRD: ['長髮','短髮','皮膚黑','身高180上下','','請簡述說明','請簡述說明','無','無','請簡述說明','','生命徵象穩定'][Math.floor(Math.random() * 12)],
+              hosspace: getRandom(1,10)
+            });
+          }
+        }
+      }
+    function Show(row,state) {
+      if (pagination == "home") {
+        case_table_renew()
+        var firstRow = document.querySelector('#data_table tbody tr:first-child');
+        var modal = document.querySelector('.modal');
+        var case_table = $('#data_table').DataTable();
+        var targetRow = case_table.row(row).node();
+        var originalBGC = $(targetRow).css('background-color');
+        if (row == undefined && state== undefined) {
+          $('#data_table tbody tr:first').css('background-color', 'rgba(76, 220, 131, 0.911)');
+          setTimeout(function() {
+            firstRow.style.transition = 'background-color 2s';
+            firstRow.style.backgroundColor = '#F4EFDC';
+          }, 2000);
+          $('.modal').css('display', 'block');
+          $('.modal').css('background-color', 'rgba(9, 144, 61, 0.911)');
+          modal.style.opacity = 1;
+          modal.style.display = "flex";
+          modal.innerHTML = '<h1>新增' + 1 + '筆案件：' + random_case_table_data[0].case_id + '<br>案件名稱：' + random_case_table_data[0].case_name + '</h1>';
+          setTimeout(function() {
+            modal.style.transition = "opacity 2s";
+            modal.style.opacity = 0;
+            setTimeout(function() {
+              modal.style.display = "none";
+            }, 2000);
+          }, 2000);
+        }
+        else if(row>=0 && state == 0){
+          $('.modal').css('display', 'block');
+          $('.modal').css('background-color', '#fa7f7f');
+          modal.style.opacity = 1;
+          modal.style.display = "flex";
+          modal.innerHTML = '<h1>修改'+1+'筆案件縣市：'+random_case_table_data[row].case_id+'<br>案件名稱：'+random_case_table_data[row].case_name+'</h1>';
+          setTimeout(function() {
+            modal.style.transition = "opacity 2s";
+            modal.style.opacity = 0;
+            setTimeout(function() {
+              modal.style.display = "none";
+            }, 2000);
+          }, 2000);
+          var originalBGC = $(targetRow).css('background-color');
+          $(targetRow).css('background-color', '#ff9090f3');
+          setTimeout(function() {
+            targetRow.style.transition = 'background-color 2s';
+            targetRow.style.backgroundColor = originalBGC;
+          }, 2000);
+        }
+        else{
+          $('.modal').css('display', 'block');
+          $('.modal').css('background-color', '#fa7f7f');      
+          modal.style.opacity = 1;
+          modal.style.display = "flex";
+          modal.innerHTML = '<h1>修改'+1+'筆案件狀態：'+random_case_table_data[row].case_id+'<br>案件名稱：'+random_case_table_data[row].case_name+'</h1>';
+          setTimeout(function() {
+            modal.style.transition = "opacity 2s";
+            modal.style.opacity = 0;
+            setTimeout(function() {
+              modal.style.display = "none";
+            }, 2000);
+          }, 2000);
+          var originalBGC = $(targetRow).css('background-color');
+          $(targetRow).css('background-color', '#ff9090f3');
+          setTimeout(function() {
+            targetRow.style.transition = 'background-color 2s';
+            targetRow.style.backgroundColor = originalBGC;
+          }, 2000);
+        }
+      }
+    }
+
+    var randomPatientNum = ['0', '1', '2','3'];
+    var randomPatientNums = [0.1, 0.2, 0.3, 0.4];
+    setInterval(function () {
+      crud_patient=random_change(randomPatientNum, randomPatientNums)
+      present_crud_patientnum=[]
+      present_crud_patientnum.push(crud_patient)
+      if(pagination=='patient'){
+        switch (present_crud_patientnum[0]) {
+          case '0':
+            random_patient_table_data.forEach(e=>e.station.forEach(x=>x.patient.unshift({
+              o:"",
+              id: getRandom(23000000,23999999),
+              state: ['OHCA','極危險','危險','輕傷'][Math.floor(Math.random() * 4)],
+              name: ['陳小紅','陳肉桂','Banana cookie','Fish man','黃大武','方小三','李強強','Mark man','李娜','黃春純', '林明軒', '吳欣茹', '詹麗珠', '劉偉倫', '王怡如', '鄭雅民', '蔡玟生', '陳世辛', '方儀清', '劉如發', '梁恆白', '沈肇甫', '段揚伸', '黃夢意', '張瑞貴', '王玉華', '賴吟光', '夏信珠', '呂佳芷', '鐘雅萍', '吳佩萱', '林姿蓉', '陳奕剛', '潘吉行', '程芳寧', '蘇于坤', '袁月良','蔡尚威', '黃子芸', '吳豐秀','王子軒', '李美珍', '林竣慈', '鄧子芸', '王思意', '王彥翔', '黃林燦', '王彥枝', '王陽忠', '陳銘霞', '璩亮函', '陳冠松', '陳品正', '林志倩', '張文彥', '黃彥孝', '魏炳寶', '林妙榮', '黃欣琪', '葉振華', '丁皓民', '蔡嘉恭', '許雅仁', '皇甫紹佐', '黃雅雅', '劉牧育', '林旻淳', '黃雅筑', '黃筱芸', '夏雅婷', '黃佩珊', '沈怡婷', '陳可南', '吳欣其', '林麗琪', '林冠中', '黃春云', '韓皇燕', '陳正以', '喬念花', '張志瑋', '蔡宜剛', '柳紋愛', '高佳靜', '林上睿', '方禮菱', '黎夙茹', '岑筱睿', '陳伶發', '呂政宏', '張怡雯', '游萱臻', '陳柏麟', '藍政憲', '楊國榮', '陳婉婷', '陳美惠', '侯佳伶', '趙毅舜', '蔡筱婷', '黃欣怡', '吳慈方', '周雅君', '徐惠雯', '龔婉君', '王冠霞', '林宜靜', '宓宜順', '蕭竣傑', '黃裕翔', '周美君', '林孟雲', '廖筱雯', '鄭建文', '姚維倫', '黃郁州', '吳鈞旭', '林淑敏', '黃財新', '顏惠君', '顏柏豪', '許牧毓', '陳靜宜', '曾妍茹', '陳宜君', '翁雅惠', '黃鈺青', '姚志翔', '陳可欣', '蔡靜宜', '張承翰', '林書瑋', '李文意', '郎冠宇', '侯允淑', '陳國榮', '林信華'][Math.floor(Math.random() * 137)],
+              sex: ['男','女'][Math.floor(Math.random() * 2)],
+              age: getRandom(2,85),
+              loca: ['已到院','送醫中','現場','',''][Math.floor(Math.random() * 5)],
+              car: ['臺安23','臺安37','耕莘93','聯合12','振興51','北醫33','慈濟3','慈濟91','國泰61','三軍88','三軍77','聯合2','慈濟1','','','','','','','','','','','',''][Math.floor(Math.random() * 25)],
+              hos: ['臺安','耕莘','馬偕','國泰','三軍','聯合','振興','北醫','慈濟','','','','','','','','','','',''][Math.floor(Math.random() * 20)],
+              hos_level: ['重度','中度','輕度',''][Math.floor(Math.random() * 4)],
+              levtime: [case_time,''][Math.floor(Math.random() * 2)],
+              arrtime: [case_time,''][Math.floor(Math.random() * 2)],
+              pho: [ "./material/1.jpeg", "./material/2.jpeg", "./material/3.jpeg", "./material/4.jpeg", "./material/5.jpeg", "./material/6.jpeg", "./material/7.jpeg", "./material/8.jpeg", "./material/9.jpeg", "./material/10.jpeg", "./material/11.jpeg", "./material/12.jpeg" ][Math.floor(Math.random() * 12)],
+              recor: [ "./material/recor_expdf.pdf", ""][Math.floor(Math.random() * 2)],
+              injevePHONE: getRandomPhone(),
+              featureR: ['腳部韌帶損傷','左手姆指骨折','頭部、右腳擦挫傷','','','','右手臂遭刺穿','左靴掉落','鼻子擦挫傷','眼鏡破裂','手錶破裂','','左腳拖鞋掉落，食指指甲脫落','','','','','請簡述說明','請簡述說明','無','無'][Math.floor(Math.random() * 21)],
+              featureRD: ['長髮','短髮','皮膚黑','身高180上下','','請簡述說明','請簡述說明','無','無','請簡述說明','','生命徵象穩定'][Math.floor(Math.random() * 12)],
+              hosspace: getRandom(1,10)
+            },
+            {
+              o:"",
+              id: getRandom(23000000,23999999),
+              state: ['OHCA','極危險','危險','輕傷'][Math.floor(Math.random() * 4)],
+              name: ['陳小紅','陳肉桂','Banana cookie','Fish man','黃大武','方小三','李強強','Mark man','李娜','黃春純', '林明軒', '吳欣茹', '詹麗珠', '劉偉倫', '王怡如', '鄭雅民', '蔡玟生', '陳世辛', '方儀清', '劉如發', '梁恆白', '沈肇甫', '段揚伸', '黃夢意', '張瑞貴', '王玉華', '賴吟光', '夏信珠', '呂佳芷', '鐘雅萍', '吳佩萱', '林姿蓉', '陳奕剛', '潘吉行', '程芳寧', '蘇于坤', '袁月良','蔡尚威', '黃子芸', '吳豐秀','王子軒', '李美珍', '林竣慈', '鄧子芸', '王思意', '王彥翔', '黃林燦', '王彥枝', '王陽忠', '陳銘霞', '璩亮函', '陳冠松', '陳品正', '林志倩', '張文彥', '黃彥孝', '魏炳寶', '林妙榮', '黃欣琪', '葉振華', '丁皓民', '蔡嘉恭', '許雅仁', '皇甫紹佐', '黃雅雅', '劉牧育', '林旻淳', '黃雅筑', '黃筱芸', '夏雅婷', '黃佩珊', '沈怡婷', '陳可南', '吳欣其', '林麗琪', '林冠中', '黃春云', '韓皇燕', '陳正以', '喬念花', '張志瑋', '蔡宜剛', '柳紋愛', '高佳靜', '林上睿', '方禮菱', '黎夙茹', '岑筱睿', '陳伶發', '呂政宏', '張怡雯', '游萱臻', '陳柏麟', '藍政憲', '楊國榮', '陳婉婷', '陳美惠', '侯佳伶', '趙毅舜', '蔡筱婷', '黃欣怡', '吳慈方', '周雅君', '徐惠雯', '龔婉君', '王冠霞', '林宜靜', '宓宜順', '蕭竣傑', '黃裕翔', '周美君', '林孟雲', '廖筱雯', '鄭建文', '姚維倫', '黃郁州', '吳鈞旭', '林淑敏', '黃財新', '顏惠君', '顏柏豪', '許牧毓', '陳靜宜', '曾妍茹', '陳宜君', '翁雅惠', '黃鈺青', '姚志翔', '陳可欣', '蔡靜宜', '張承翰', '林書瑋', '李文意', '郎冠宇', '侯允淑', '陳國榮', '林信華'][Math.floor(Math.random() * 137)],
+              sex: ['男','女'][Math.floor(Math.random() * 2)],
+              age: getRandom(2,85),
+              loca: ['已到院','送醫中','現場','',''][Math.floor(Math.random() * 5)],
+              car: ['臺安23','臺安37','耕莘93','聯合12','振興51','北醫33','慈濟3','慈濟91','國泰61','三軍88','三軍77','聯合2','慈濟1','','','','','','','','','','','',''][Math.floor(Math.random() * 25)],
+              hos: ['臺安','耕莘','馬偕','國泰','三軍','聯合','振興','北醫','慈濟','','','','','','','','','','',''][Math.floor(Math.random() * 20)],
+              hos_level: ['重度','中度','輕度',''][Math.floor(Math.random() * 4)],
+              levtime: [case_time,''][Math.floor(Math.random() * 2)],
+              arrtime: [case_time,''][Math.floor(Math.random() * 2)],
+              pho: [ "./material/1.jpeg", "./material/2.jpeg", "./material/3.jpeg", "./material/4.jpeg", "./material/5.jpeg", "./material/6.jpeg", "./material/7.jpeg", "./material/8.jpeg", "./material/9.jpeg", "./material/10.jpeg", "./material/11.jpeg", "./material/12.jpeg" ][Math.floor(Math.random() * 12)],
+              recor: [ "./material/recor_expdf.pdf", ""][Math.floor(Math.random() * 2)],
+              injevePHONE: getRandomPhone(),
+              featureR: ['腳部韌帶損傷','左手姆指骨折','頭部、右腳擦挫傷','','','','右手臂遭刺穿','左靴掉落','鼻子擦挫傷','眼鏡破裂','手錶破裂','','左腳拖鞋掉落，食指指甲脫落','','','','','請簡述說明','請簡述說明','無','無'][Math.floor(Math.random() * 21)],
+              featureRD: ['長髮','短髮','皮膚黑','身高180上下','','請簡述說明','請簡述說明','無','無','請簡述說明','','生命徵象穩定'][Math.floor(Math.random() * 12)],
+              hosspace: getRandom(1,10)
+            })))
+            randomPatientNum.forEach((elem, index) => {
+              if (elem === "0") {
+                randomPatientNum.splice(index, 1);
+              }
+            });
+            randomPatientNums.forEach((elem, index) => {
+              if (elem === 0.1) {
+                randomPatientNums.splice(index, 1);
+              }
+            });
+            setTimeout(() => {
+              randomPatientNum.push('0')
+              randomPatientNums.push(0.1)
+            }, 15000);
+            break;
+          case '1':
+            random_patient_table_data.forEach(e=>e.station.forEach(x=>x.patient.unshift({
+              o:"",
+              id: getRandom(23000000,23999999),
+              state: ['OHCA','極危險','危險','輕傷'][Math.floor(Math.random() * 4)],
+              name: ['陳小紅','陳肉桂','Banana cookie','Fish man','黃大武','方小三','李強強','Mark man','李娜','黃春純', '林明軒', '吳欣茹', '詹麗珠', '劉偉倫', '王怡如', '鄭雅民', '蔡玟生', '陳世辛', '方儀清', '劉如發', '梁恆白', '沈肇甫', '段揚伸', '黃夢意', '張瑞貴', '王玉華', '賴吟光', '夏信珠', '呂佳芷', '鐘雅萍', '吳佩萱', '林姿蓉', '陳奕剛', '潘吉行', '程芳寧', '蘇于坤', '袁月良','蔡尚威', '黃子芸', '吳豐秀','王子軒', '李美珍', '林竣慈', '鄧子芸', '王思意', '王彥翔', '黃林燦', '王彥枝', '王陽忠', '陳銘霞', '璩亮函', '陳冠松', '陳品正', '林志倩', '張文彥', '黃彥孝', '魏炳寶', '林妙榮', '黃欣琪', '葉振華', '丁皓民', '蔡嘉恭', '許雅仁', '皇甫紹佐', '黃雅雅', '劉牧育', '林旻淳', '黃雅筑', '黃筱芸', '夏雅婷', '黃佩珊', '沈怡婷', '陳可南', '吳欣其', '林麗琪', '林冠中', '黃春云', '韓皇燕', '陳正以', '喬念花', '張志瑋', '蔡宜剛', '柳紋愛', '高佳靜', '林上睿', '方禮菱', '黎夙茹', '岑筱睿', '陳伶發', '呂政宏', '張怡雯', '游萱臻', '陳柏麟', '藍政憲', '楊國榮', '陳婉婷', '陳美惠', '侯佳伶', '趙毅舜', '蔡筱婷', '黃欣怡', '吳慈方', '周雅君', '徐惠雯', '龔婉君', '王冠霞', '林宜靜', '宓宜順', '蕭竣傑', '黃裕翔', '周美君', '林孟雲', '廖筱雯', '鄭建文', '姚維倫', '黃郁州', '吳鈞旭', '林淑敏', '黃財新', '顏惠君', '顏柏豪', '許牧毓', '陳靜宜', '曾妍茹', '陳宜君', '翁雅惠', '黃鈺青', '姚志翔', '陳可欣', '蔡靜宜', '張承翰', '林書瑋', '李文意', '郎冠宇', '侯允淑', '陳國榮', '林信華'][Math.floor(Math.random() * 137)],
+              sex: ['男','女'][Math.floor(Math.random() * 2)],
+              age: getRandom(2,85),
+              loca: ['已到院','送醫中','現場','',''][Math.floor(Math.random() * 5)],
+              car: ['臺安23','臺安37','耕莘93','聯合12','振興51','北醫33','慈濟3','慈濟91','國泰61','三軍88','三軍77','聯合2','慈濟1','','','','','','','','','','','',''][Math.floor(Math.random() * 25)],
+              hos: ['臺安','耕莘','馬偕','國泰','三軍','聯合','振興','北醫','慈濟','','','','','','','','','','',''][Math.floor(Math.random() * 20)],
+              hos_level: ['重度','中度','輕度',''][Math.floor(Math.random() * 4)],
+              levtime: [case_time,''][Math.floor(Math.random() * 2)],
+              arrtime: [case_time,''][Math.floor(Math.random() * 2)],
+              pho: [ "./material/1.jpeg", "./material/2.jpeg", "./material/3.jpeg", "./material/4.jpeg", "./material/5.jpeg", "./material/6.jpeg", "./material/7.jpeg", "./material/8.jpeg", "./material/9.jpeg", "./material/10.jpeg", "./material/11.jpeg", "./material/12.jpeg" ][Math.floor(Math.random() * 12)],
+              recor: [ "./material/recor_expdf.pdf", ""][Math.floor(Math.random() * 2)],
+              injevePHONE: getRandomPhone(),
+              featureR: ['腳部韌帶損傷','左手姆指骨折','頭部、右腳擦挫傷','','','','右手臂遭刺穿','左靴掉落','鼻子擦挫傷','眼鏡破裂','手錶破裂','','左腳拖鞋掉落，食指指甲脫落','','','','','請簡述說明','請簡述說明','無','無'][Math.floor(Math.random() * 21)],
+              featureRD: ['長髮','短髮','皮膚黑','身高180上下','','請簡述說明','請簡述說明','無','無','請簡述說明','','生命徵象穩定'][Math.floor(Math.random() * 12)],
+              hosspace: getRandom(1,10)
+            })))
+            randomPatientNum.forEach((elem, index) => {
+              if (elem === "1") {
+                randomPatientNum.splice(index, 1);
+              }
+            });
+            randomPatientNums.forEach((elem, index) => {
+              if (elem === 0.2) {
+                randomPatientNums.splice(index, 1);
+              }
+            });
+            setTimeout(() => {
+              randomPatientNum.push('1')
+              randomPatientNums.push(0.2)
+            }, 15000);
+            break;
+          case '2':
+            random_patient_table_data.forEach(e=>e.station.forEach(x=>x.patient.unshift({
+              o:"",
+              id: getRandom(23000000,23999999),
+              state: ['OHCA','極危險','危險','輕傷'][Math.floor(Math.random() * 4)],
+              name: ['陳小紅','陳肉桂','Banana cookie','Fish man','黃大武','方小三','李強強','Mark man','李娜','黃春純', '林明軒', '吳欣茹', '詹麗珠', '劉偉倫', '王怡如', '鄭雅民', '蔡玟生', '陳世辛', '方儀清', '劉如發', '梁恆白', '沈肇甫', '段揚伸', '黃夢意', '張瑞貴', '王玉華', '賴吟光', '夏信珠', '呂佳芷', '鐘雅萍', '吳佩萱', '林姿蓉', '陳奕剛', '潘吉行', '程芳寧', '蘇于坤', '袁月良','蔡尚威', '黃子芸', '吳豐秀','王子軒', '李美珍', '林竣慈', '鄧子芸', '王思意', '王彥翔', '黃林燦', '王彥枝', '王陽忠', '陳銘霞', '璩亮函', '陳冠松', '陳品正', '林志倩', '張文彥', '黃彥孝', '魏炳寶', '林妙榮', '黃欣琪', '葉振華', '丁皓民', '蔡嘉恭', '許雅仁', '皇甫紹佐', '黃雅雅', '劉牧育', '林旻淳', '黃雅筑', '黃筱芸', '夏雅婷', '黃佩珊', '沈怡婷', '陳可南', '吳欣其', '林麗琪', '林冠中', '黃春云', '韓皇燕', '陳正以', '喬念花', '張志瑋', '蔡宜剛', '柳紋愛', '高佳靜', '林上睿', '方禮菱', '黎夙茹', '岑筱睿', '陳伶發', '呂政宏', '張怡雯', '游萱臻', '陳柏麟', '藍政憲', '楊國榮', '陳婉婷', '陳美惠', '侯佳伶', '趙毅舜', '蔡筱婷', '黃欣怡', '吳慈方', '周雅君', '徐惠雯', '龔婉君', '王冠霞', '林宜靜', '宓宜順', '蕭竣傑', '黃裕翔', '周美君', '林孟雲', '廖筱雯', '鄭建文', '姚維倫', '黃郁州', '吳鈞旭', '林淑敏', '黃財新', '顏惠君', '顏柏豪', '許牧毓', '陳靜宜', '曾妍茹', '陳宜君', '翁雅惠', '黃鈺青', '姚志翔', '陳可欣', '蔡靜宜', '張承翰', '林書瑋', '李文意', '郎冠宇', '侯允淑', '陳國榮', '林信華'][Math.floor(Math.random() * 137)],
+              sex: ['男','女'][Math.floor(Math.random() * 2)],
+              age: getRandom(2,85),
+              loca: ['已到院','送醫中','現場','',''][Math.floor(Math.random() * 5)],
+              car: ['臺安23','臺安37','耕莘93','聯合12','振興51','北醫33','慈濟3','慈濟91','國泰61','三軍88','三軍77','聯合2','慈濟1','','','','','','','','','','','',''][Math.floor(Math.random() * 25)],
+              hos: ['臺安','耕莘','馬偕','國泰','三軍','聯合','振興','北醫','慈濟','','','','','','','','','','',''][Math.floor(Math.random() * 20)],
+              hos_level: ['重度','中度','輕度',''][Math.floor(Math.random() * 4)],
+              levtime: [case_time,''][Math.floor(Math.random() * 2)],
+              arrtime: [case_time,''][Math.floor(Math.random() * 2)],
+              pho: [ "./material/1.jpeg", "./material/2.jpeg", "./material/3.jpeg", "./material/4.jpeg", "./material/5.jpeg", "./material/6.jpeg", "./material/7.jpeg", "./material/8.jpeg", "./material/9.jpeg", "./material/10.jpeg", "./material/11.jpeg", "./material/12.jpeg" ][Math.floor(Math.random() * 12)],
+              recor: [ "./material/recor_expdf.pdf", ""][Math.floor(Math.random() * 2)],
+              injevePHONE: getRandomPhone(),
+              featureR: ['腳部韌帶損傷','左手姆指骨折','頭部、右腳擦挫傷','','','','右手臂遭刺穿','左靴掉落','鼻子擦挫傷','眼鏡破裂','手錶破裂','','左腳拖鞋掉落，食指指甲脫落','','','','','請簡述說明','請簡述說明','無','無'][Math.floor(Math.random() * 21)],
+              featureRD: ['長髮','短髮','皮膚黑','身高180上下','','請簡述說明','請簡述說明','無','無','請簡述說明','','生命徵象穩定'][Math.floor(Math.random() * 12)],
+              hosspace: getRandom(1,10)
+            })))
+            randomPatientNum.forEach((elem, index) => {
+              if (elem === "2") {
+                randomPatientNum.splice(index, 1);
+              }
+            });
+            randomPatientNums.forEach((elem, index) => {
+              if (elem === 0.3) {
+                randomPatientNums.splice(index, 1);
+              }
+            });
+            setTimeout(() => {
+              randomPatientNum.push('2')
+              randomPatientNums.push(0.3)
+            }, 15000);
+            break;
+          case '3':
+            random_patient_table_data.forEach(e=>e.station.forEach(x=>x.patient.length = x.patient.length-1))
+            randomPatientNum.forEach((elem, index) => {
+              if (elem === "3") {
+                randomPatientNum.splice(index, 1);
+              }
+            });
+            randomPatientNums.forEach((elem, index) => {
+              if (elem === 0.4) {
+                randomPatientNums.splice(index, 1);
+              }
+            });
+            setTimeout(() => {
+              randomPatientNum.push('3')
+              randomPatientNums.push(0.4)
+            }, 15000);
+            break;
+          case '4':
+            random_patient_table_data.forEach(e=>e.station.forEach(x=>x.patient.length = x.patient.length-2))
+            randomPatientNum.forEach((elem, index) => {
+              if (elem === "4") {
+                randomPatientNum.splice(index, 1);
+              }
+            });
+            randomPatientNums.forEach((elem, index) => {
+              if (elem === 0.5) {
+                randomPatientNums.splice(index, 1);
+              }
+            });
+            setTimeout(() => {
+              randomPatientNum.push('4')
+              randomPatientNums.push(0.5)
+            }, 20000);
+            break;
+        }
+        patient_table_renew()
+      }
+    },10000)
+
+
+    var randomNumber = ['0', '1', '2','3','7','8','9'];
+    var randomNumbers = [0.1, 0.2, 0.3, 0.4, 0.8, 0.9, 1.0];
+    setInterval(function () {
+      crud=random_change(randomNumber, randomNumbers)
+      present_crudnum=[]
+      present_crudnum.push(crud)
+      switch(present_crudnum[0]){
+        case "0":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "0") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumber.push('10')
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 0.1) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          setTimeout(() => {
+            randomNumber.push('0')
+            randomNumbers.push(0.1)
+          }, 20000);
+          randomNumbers.push(1.1)
+          break;
+        case "1":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "1") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumber.push('11')
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 0.2) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          setTimeout(() => {
+            randomNumber.push('1')
+            randomNumbers.push(0.2)
+          }, 20000);
+          randomNumbers.push(1.2)
+          break;
+        case "2":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "2") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumber.push('12')
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 0.3) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          randomNumbers.push(1.3)
+          break;
+        case "3":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "3") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumber.push('13')
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 0.4) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          randomNumbers.push(1.4)
+          setTimeout(function () {randomNumber.push('4'),randomNumbers.push(0.5)},26000)
+          break;
+        case "4":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "4") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumber.push('14')
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 0.5) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          randomNumbers.push(1.5)
+          setTimeout(function () {randomNumber.push('5'),randomNumbers.push(0.6)},26000)
+          break;
+        case "5":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "5") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumber.push('15')
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 0.6) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          randomNumbers.push(1.6)
+          setTimeout(function () {randomNumber.push('6'),randomNumbers.push(0.7)},25000)
+          break;
+        case "6":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "6") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumber.push('16')
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 0.7) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          randomNumbers.push(1.7)
+          break;
+        case "7":
+          var row=getRandom(0,11)
+          random_case_table_data[row].case_county = ['台北市','新北市','基隆市','桃園市','宜蘭縣','花蓮市','新竹市','高雄市','台中市','南投縣','澎湖縣'][Math.floor(Math.random() * 11)]
+          Show(row,0)
+          break;
+        case "8":
+          var row = getRandom(11,40)
+          if(random_case_table_data[row]!=undefined)
+          {
+            random_case_table_data[row].case_county = ['台北市','新北市','基隆市','桃園市','宜蘭縣','花蓮市','新竹市','高雄市','台中市','南投縣','澎湖縣'][Math.floor(Math.random() * 11)]
+            Show(row,0)
+          }
+          break;
+        case "9":
+          var row = getRandom(0,35);
+          if (random_case_table_data[row]==undefined) {
+            row = getRandom(0,11);
+            random_case_table_data[row].case_state = ['進行中','已結案'][Math.floor(Math.random() * 2)];
+            Show(row, -1);
+          }
+          else {
+            random_case_table_data[row].case_state = ['進行中','已結案'][Math.floor(Math.random() * 2)];
+            Show(row, -1);
+          }
+          break;
+        case "10":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "10") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 1.1) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          break;
+        case "11":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "11") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 1.2) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          break;
+        case "12":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "12") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 1.3) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          break;
+        case "13":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "13") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 1.4) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          break;
+        case "14":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "14") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 1.5) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          break;
+        case "15":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "15") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 1.6) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          break;
+        case "16":
+          var num = getRandom(0,45)
+          random_case_table_data.unshift(randomCRUD_case_table_data[num]);
+          Show(undefined,undefined)
+          randomNumber.forEach((elem, index) => {
+            if (elem === "16") {
+              randomNumber.splice(index, 1);
+            }
+          });
+          randomNumbers.forEach((elem, index) => {
+            if (elem === 1.7) {
+              randomNumbers.splice(index, 1);
+            }
+          });
+          break;
+        }
+      },5000)
+    }
+
+    case_table_init()
+    setInterval(function () {update_all()},renewt);
+    function app() {
+      var div= document.createElement("div");
+      div.id="hideapp"
+      div.innerHTML='<a href="https://www.google.com.tw/?hl=zh_TW"><img src="material/IOS.png"></a><a href="https://www.google.com.tw/?hl=zh_TW"><img src="material/Android.png"></a>' ;
+      div.setAttribute('onclick', 'rmdiv("hideapp")');
+      document.getElementById("body").append(div);
+    }
+
+    function case_table_init() {
+        timenow()
+        datalist=case_table_data
+        date_datalist=JSON.parse(JSON.stringify(datalist));
+        present_datalist=JSON.parse(JSON.stringify(date_datalist));
+        present_datalist_list=present_datalist.map(x => x.case_id);
+        sel_county_renew()
+
+        case_table = $('#data_table').DataTable( {
+          "lengthMenu":[[5,10,20,50],[5,10,20,50]],"iDisplayLength":5,
+          "language":{"processing": "處理中...","loadingRecords": "載入中...","lengthMenu": "每頁顯示 _MENU_ 筆資料","info": "顯示第 _START_ 至 _END_ 筆資料，共 _TOTAL_ 筆",
+            "infoEmpty": "顯示第 0 至 0 筆資料，共 0 筆","infoFiltered": "","search": "搜尋:",
+            "paginate": {"first": "第一頁","previous": "上一頁","next": "下一頁","last": "最後一頁"},
+            "emptyTable": "無資料","zeroRecords": "無資料",
+            "oAria": {"sSortAscending": ": 以升序排列此列","sSortDescending": ": 以降序排列此列"},
+          } ,
+          data: present_datalist,
+          columns: [
+            {title: '',data: 'o'},
+            {title: '項次',data: 'o'},
+            {title: '大傷案號',data: 'case_id'},
+            {title: '大傷名稱',data:'case_name','render':function(case_name){if(!case_name){return '-';}else{return case_name}}},
+            {title: '案發縣市',data:'case_county','render':function(case_county){if(!case_county){return '-';}else{return case_county}}},
+            {title: '開案時間',data:'case_time','render':function(case_time){if(!case_time){return '-';}else{return case_time}}},
+            {title: '案件狀態',data: 'case_state',
+              render: function (data, type, row) {
+                return '<div class="state_but_div"><button type="button" class="state_but" onclick="casestate_btn(\''+row.case_id+'\')" id="casehome">'+data+'</button></div>'  
+              }
+            }],
+          responsive: {details: {type: 'column'},},
+          columnDefs: [ 
+            {targets:0,className: 'dtr-control',orderable: false,},
+            {targets: [0],width:"3%"},
+            {targets: [1],orderable: false,width:"3%"},
+            {targets: [2],responsivePriority: 50000},
+            {targets: [3],responsivePriority: 1,orderable: false},
+            {targets: [4],responsivePriority: 100000},
+            {targets: [5]},
+            {targets: [6],responsivePriority: 1,width:"10%"},
+          ],
+          order: [ 0, 'ace' ],
+        });
+        case_table.on('order.dt search.dt',function() {
+          case_table.column(1, {search: 'applied',order: 'applied'}).nodes().each(function(cell, i) {
+            cell.innerHTML = i + 1;
+          });
+        }).draw();
+        var data_table = document.getElementById('data_table')
+            data_table.style.width='100%';
+    }
+
+    function station_table_init(cid) {
+        timenow()
+        station_table_data.forEach(e => {e.case_id==cid?stationdata=e:''})
+        present_stationdata=JSON.parse(JSON.stringify(stationdata.station));
+        present_stationdata_list=present_stationdata.map(x => x.station_num);
+        station_table = $('#station_table').DataTable( {
+          "lengthMenu":[[5,10,20,50],[5,10,20,50]],"iDisplayLength":5,
+          "language":{"processing": "處理中...","loadingRecords": "載入中...","lengthMenu": "每頁顯示 _MENU_ 筆資料","info": "顯示第 _START_ 至 _END_ 筆資料，共 _TOTAL_ 筆",
+            "infoEmpty": "顯示第 0 至 0 筆資料，共 0 筆","infoFiltered": "","search": "搜尋:",
+            "paginate": {"first": "第一頁","previous": "上一頁","next": "下一頁","last": "最後一頁"},
+            "emptyTable": "無資料","zeroRecords": "無資料",
+            "oAria": {"sSortAscending": ": 以升序排列此列","sSortDescending": ": 以降序排列此列"}
+          } ,
+          data: present_stationdata,
+          columns: [
+                {title: '',data: 'o'},
+                {title: '項次',data: 'o'},
+                {title: '救護站號',data: 'station_num'},
+                {title: '救護站名',data: 'station_name','render': function (data, type, row) {
+                  return '<a class="station_name" id="station_nameid" onclick="station_btn(\''+row.station_num+'\');sname(this)">'+data+'</a>'
+                },},
+                {title: '開始時間',data: 'station_stime','render':function(station_stime){if(!station_stime){return '-';}else{return station_stime}}},
+                {title: '結束時間',data: 'station_etime','render':function(station_etime){if(!station_etime){return '-';}else{return station_etime}}},
+                {title: '總檢傷人數',data: 'station_totpeo',
+              render: function (data, type, row) {
+                return '<button class="black point"></button>'+(data.black=='0'?'-':data.black)+'<br><button class="red point"></button>'+(data.red=='0'?'-':data.red)+'<br><button class="orange point"></button>'+(data.orange=='0'?'-':data.orange)+'<br><button class="greenyellow point"></button>'+(data.green=='0'?'-':data.green)
+              }},
+                {title: '未送醫人數',data: 'station_nohos',
+              render: function (data, type, row) {
+                var value=[]
+                if(data.black=='0'){value[0]='-'}else{value[0]=row.station_nohos.black}
+                if(data.red=='0'){value[1]='-'}else{value[1]=row.station_nohos.red}
+                if(data.orange=='0'){value[2]='-'}else{value[2]=row.station_nohos.orange}
+                if(data.green=='0'){value[3]='-'}else{value[3]=row.station_nohos.green}
+                return '<button class="black point"></button>'+value[0]+'<br><button class="red point"></button>'+value[1]+'<br><button class="orange point"></button>'+value[2]+'<br><button class="greenyellow point"></button>'+value[3]
+              }},
+                {title: '送醫中人數',data: 'station_rouhos',  
+              render: function (data, type, row) {
+                var value=[]
+                if(data.black=='0'){value[0]='-'}else{value[0]=row.station_rouhos.black}
+                if(data.red=='0'){value[1]='-'}else{value[1]=row.station_rouhos.red}
+                if(data.orange=='0'){value[2]='-'}else{value[2]=row.station_rouhos.orange}
+                if(data.green=='0'){value[3]='-'}else{value[3]=row.station_rouhos.green}
+                return '<button class="black point"></button>'+value[0]+'<br><button class="red point"></button>'+value[1]+'<br><button class="orange point"></button>'+value[2]+'<br><button class="greenyellow point"></button>'+value[3]
+              }},
+                {title: '到院人數',data: 'station_inhos',
+              render: function (data, type, row) {
+                var value=[]
+                if(data.black=='0'){value[0]='-'}else{value[0]=row.station_inhos.black}
+                if(data.red=='0'){value[1]='-'}else{value[1]=row.station_inhos.red}
+                if(data.orange=='0'){value[2]='-'}else{value[2]=row.station_inhos.orange}
+                if(data.green=='0'){value[3]='-'}else{value[3]=row.station_inhos.green}
+                return '<button class="black point"></button>'+value[0]+'<br><button class="red point"></button>'+value[1]+'<br><button class="orange point"></button>'+value[2]+'<br><button class="greenyellow point"></button>'+value[3]
+              }} ],
+          responsive: {details:{type: 'column'}},
+          columnDefs: [ 
+            {targets:0,className: 'dtr-control',orderable: false,},
+            {targets: [1],orderable: false},
+            {targets: [2],orderable: false},
+            {targets: [3],orderable: false,responsivePriority: 1,width:"10%"},
+            {targets: [4],responsivePriority: 700000},
+            {targets: [5],responsivePriority: 800000},
+            {targets: [6],orderable: false,responsivePriority: 1,width:"10%"},
+            {targets: [7],orderable: false,responsivePriority: 1,width:"10%"},
+            {targets: [8],orderable: false,responsivePriority: 1,width:"10%"},
+            {targets: [9],orderable: false,responsivePriority: 1,width:"10%"},
+          ],
+          order: [ 0, 'ace' ],
+        });
+        station_table.on('order.dt search.dt',function() {
+          station_table.column(1, {search: 'applied',order: 'applied'}).nodes().each(function(cell, i) {
+            cell.innerHTML = i + 1;
+          });
+        }).draw();
+        var st = document.getElementById('station_table')
+        st.style.width='100%';
+        update_statistics()
+        datapush()
+    }
+
+    function patient_table_init(snum) {
+      timenow()
+        patient_table_data.forEach(e => {e.station_num==snum?patientdata=e:''})
+        present_patientdata=JSON.parse(JSON.stringify(patientdata.patient));
+        present_patientdata_list=present_patientdata.map(x => x.id);
+        patient_table = $('#patient_table').DataTable( {
+          "lengthMenu":[[5,10,20,50],[5,10,20,50]],"iDisplayLength":5,
+          "language":{"processing": "處理中...","loadingRecords": "載入中...","lengthMenu": "每頁顯示 _MENU_ 筆資料","info": "顯示第 _START_ 至 _END_ 筆資料，共 _TOTAL_ 筆",
+            "infoEmpty": "顯示第 0 至 0 筆資料，共 0 筆","infoFiltered": "","search": "搜尋:",
+            "paginate": {"first": "第一頁","previous": "上一頁","next": "下一頁","last": "最後一頁"},
+            "emptyTable": "無資料","zeroRecords": "無資料",
+            "oAria": {"sSortAscending": ": 以升序排列此列","sSortDescending": ": 以降序排列此列"}
+          } ,
+            data: present_patientdata,
+            columns: [
+              {title: '',data: 'o'},
+              {title: '項次',data:'o'},
+              {title: '檢傷編碼',data: 'id',
+                render: function (data, type, row) {
+                  var classname;
+                  if (row.state=='OHCA') {classname='ohcattriage' }
+                  else if (row.state=='極危險') {classname='redttriage'}
+                  else if (row.state=='危險') {classname='orangettriage'}
+                  else if (row.state=='輕傷') {classname='greenttriage'}
+                  return '<div class="triage ' + classname + '" >'+row.id+'</div> '
+                },
+              },
+              {title: '姓名',data:'name','render':function(name){if(!name){return '-';}else{return name}}},
+              {title: '性別',data: 'sex','render':function(sex){if(!sex){return '不明';}else{return sex}}},
+              {title: '年齡',data: 'age','render':function(age){if(!age){return '-';}else{return age}}},
+              {title: '狀態',data:'loca','render':function(loca){if(!loca){return '-';}else{return loca}}},
+              {title: '後送車輛',data:'car','render':function(car){if(!car){return '-';}else{return car}}},
+              {title: '後送醫院',data:'hos','render':function(hos){if(!hos){return '-';}else{return hos}}},
+              {title: '離開現場時間',data: 'levtime','render':function(levtime){if(!levtime){return '-';}else{return levtime}}},
+              {title: '到院時間',data: 'arrtime','render':function(arrtime){if(!arrtime){return '-';}else{return arrtime}}},
+              {title: '特徵照片',data: 'pho',
+                render: function (data, type, row) {return '<div class="state_but_div"><button type="button" class="state_but" onclick="myBtn(\''+row.id+'\')">檢視</button></div>'}, 
+              },
+              {title: '救護紀錄',data: 'recor',
+                render: function (data, type, row) {return '<div class="state_but_div"><button type="button" class="state_but" onclick="record(\''+row.id+'\')">檢視</button></div>'},
+              },
+              {title: '傷患資訊',data: 'feature',
+                render: function (data, type, row) {return '<div class="state_but_div"><button type="button" class="state_but" onclick="feafun(\''+row.id+'\')">檢視</button></div>'}, 
+              },
+            ],
+            responsive: {details:{type: 'column'}},
+            columnDefs: [
+              {targets:0,className: 'dtr-control',orderable: false,},
+              {targets: [0],width:"3%"},
+              {targets: [1],responsivePriority: 1,orderable: false,width:"3%"},
+              {targets: [2],responsivePriority: 100},
+              {targets: [3],responsivePriority: 1,orderable: false},
+              {targets: [4],responsivePriority: 100000},
+              {targets: [5],responsivePriority: 100000},
+              {targets: [6],responsivePriority: 1,width:"10%"},
+              {targets: [11,12,13],width:"8%",responsivePriority: 10000,orderable: false},
+            ],
+            order: [ 0, 'ace' ],
+        });
+        patient_table.on('order.dt search.dt',function() {
+          patient_table.column(1, {
+            search: 'applied',
+            order: 'applied'
+          }).nodes().each(function(cell, i) {cell.innerHTML = i + 1;});
+        }).draw();
+        var data_table = document.getElementById('patient_table')
+        data_table.style.width='100%';
+        update_statistics()
+        hos_table_init()
+        datapush() 
+    }
+    function hos_table_init() {
+      hos_data=[]
+      var hos_list=[]
+      var hos_dataob_num={"hos":"","hos_level":"","hosspace":"","hosAllPeo":0,"goHos":{"goHosBLACK":0,"goHosRED":0,"goHosORG":0,"goHosGRE":0},"arrHos":{"arrHosBLACK":0,"arrHosRED":0,"arrHosORG":0,"arrHosGRE":0},"totalHos":{"totalHosBLACK":0,"totalHosRED":0,"totalHosORG":0,"totalHosGRE":0}}; 
+      for (let i = 0;i<patientdata.patient.length;i++) {
+        if (patientdata.patient[i].hos!=""){
+          if (hos_list.includes(patientdata.patient[i].hos)==false)  {   
+            hos_list.push(patientdata.patient[i].hos)
+            hos_data.push(JSON.parse(JSON.stringify(hos_dataob_num)))
+            hos_data[hos_data.length-1]['hos']=patientdata.patient[i].hos;
+            hos_data[hos_data.length-1]['hos_level']=patientdata.patient[i].hos_level;
+            hos_data[hos_data.length-1]['hosspace']=patientdata.patient[i].hosspace;
+          }
+          var num = hos_list.indexOf(patientdata.patient[i].hos)
+          hos_data[num]['hosAllPeo']+=1;
+          if (patientdata.patient[i].state=="OHCA") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosBLACK+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosBLACK+=1}
+            hos_data[num].totalHos.totalHosRED+=1
+          }
+          else if (patientdata.patient[i].state=="極危險") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosRED+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosRED+=1}
+            hos_data[num].totalHos.totalHosRED+=1
+          }
+          else if (patientdata.patient[i].state=="危險") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosORG+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosORG+=1}
+            hos_data[num].totalHos.totalHosORG+=1
+          }
+          else if (patientdata.patient[i].state=="輕傷") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosGRE+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosGRE+=1}
+            hos_data[num].totalHos.totalHosGRE+=1
+          }
+        }
+      }
+      hos_table = $('#hos_table').DataTable( { 
+        "language":{"processing": "處理中...","loadingRecords": "載入中...","lengthMenu": "每頁顯示 _MENU_ 筆資料","info": "顯示第 _START_ 至 _END_ 筆資料，共 _TOTAL_ 筆",
+            "infoEmpty": "顯示第 0 至 0 筆資料，共 0 筆","infoFiltered": "","search": "搜尋:",
+            "paginate": {"first": "第一頁","previous": "上一頁","next": "下一頁","last": "最後一頁"},
+            "emptyTable": "無資料","zeroRecords": "無資料",
+            "oAria": {"sSortAscending": ": 以升序排列此列","sSortDescending": ": 以降序排列此列"}
+          },
+        'paging':false,'info':false,
+        columns: [
+          { title: '收治醫院',data: 'hos'},
+          {title: '醫療能力分級',data:'hos_level','render':function(hos_level){if(!hos_level){return '-';}else{return hos_level}}},
+          { title: '可容納人數',data: 'hosspace','render':function(hosspace){if(!hosspace){return '-';}else{return hosspace}}},
+          { title: '已送往人數',data: 'hosAllPeo','render':function(hosAllPeo){if(!hosAllPeo){return '-';}else{return hosAllPeo}}},
+          { title: '送醫中',data: 'goHos',
+            render: function (data, type, row) {  
+              var value=[]
+              if(data.goHosBLACK=='0'){value[0]='-'}else{value[0]=row.goHos.goHosBLACK}
+              if(data.goHosRED=='0'){value[1]='-'}else{value[1]=row.goHos.goHosRED}
+              if(data.goHosORG=='0'){value[2]='-'}else{value[2]=row.goHos.goHosORG}
+              if(data.goHosGRE=='0'){value[3]='-'}else{value[3]=row.goHos.goHosGRE}
+              return '<button class="black point"></button>'+value[0]+'<br><button class="red point"></button>'+value[1]+'<br><button class="orange point"></button>'+value[2]+'<br><button class="greenyellow point"></button>'+value[3]
+            }
+          },
+          { title: '已到院',data: 'arrHos',
+            render: function (data, type, row) {  
+              var value=[]
+              if(data.arrHosBLACK=='0'){value[0]='-'}else{value[0]=row.arrHos.arrHosBLACK}
+              if(data.arrHosRED=='0'){value[1]='-'}else{value[1]=row.arrHos.arrHosRED}
+              if(data.arrHosORG=='0'){value[2]='-'}else{value[2]=row.arrHos.arrHosORG}
+              if(data.arrHosGRE=='0'){value[3]='-'}else{value[3]=row.arrHos.arrHosGRE}
+              return '<button class="black point"></button>'+value[0]+'<br><button class="red point"></button>'+value[1]+'<br><button class="orange point"></button>'+value[2]+'<br><button class="greenyellow point"></button>'+value[3]
+            }
+          },
+          { title: '總計',data: 'totalHos',
+            render: function (data, type, row) {  
+              var value=[]
+              if(data.totalHosBLACK=='0'){value[0]='-'}else{value[0]=row.totalHos.totalHosBLACK}
+              if(data.totalHosRED=='0'){value[1]='-'}else{value[1]=row.totalHos.totalHosRED}
+              if(data.totalHosORG=='0'){value[2]='-'}else{value[2]=row.totalHos.totalHosORG}
+              if(data.totalHosGRE=='0'){value[3]='-'}else{value[3]=row.totalHos.totalHosGRE}
+              return '<button class="black point"></button>'+value[0]+'<br><button class="red point"></button>'+value[1]+'<br><button class="orange point"></button>'+value[2]+'<br><button class="greenyellow point"></button>'+value[3]
+            }
+          }
+        ],  
+        columnDefs: [ { targets: '_all',className: 'text-center'},
+        {targets: [0],orderable: true},
+        {targets: [1],orderable: true},
+        {targets: [2],orderable: true},
+        {targets: [3],orderable: true},
+        {targets: [4],orderable: false},
+        {targets: [5],orderable: false},
+        {targets: [6],orderable: false}
+        ], 
+        data: hos_data,
+    });
+    var data_table = document.getElementById('hos_table')
+        data_table.style.width='100%';
+    document.getElementById('menu1').classList.add('displaynone')
+    }
+
+    function update_all() {
+      if (pagination=='home') {case_table_renew(true)}
+      else if(pagination=='station') {station_table_renew(true)}
+      else {patient_table_renew(true)}
+    }
+
+    function case_table_renew(update=false) {
+      if (update==false) {
+        date_datalist=JSON.parse(JSON.stringify(datalist));
+        var i=0;
+        while (i<date_datalist.length) {
+          if (date_datalist[i].case_time < minDate | date_datalist[i].case_time > maxDate){
+            date_datalist.splice(i, 1);
+          }
+          else {
+            i++;
+          }
+        }
+        present_datalist=JSON.parse(JSON.stringify(date_datalist));
+        if (sel_county.value!='全部') {
+          var i=0;
+          while (i<present_datalist.length) {
+            if ((present_datalist[i].case_county != sel_county.value )){
+              present_datalist.splice(i, 1);
+            }
+            else {
+              i++;
+            }
+          }
+        }
+        present_datalist_list=present_datalist.map(x => x.case_id);
+        case_table.clear()
+        case_table.rows.add(present_datalist)
+        case_table.draw( false );
+        case_table.page(0).draw( false );
+      }
+      else {
+          var currentPage = case_table.page()
+          datalist=case_table_data;
+          date_datalist=JSON.parse(JSON.stringify(datalist));
+          var i=0;
+          while (i<date_datalist.length) {
+            if (date_datalist[i].case_time < minDate | date_datalist[i].case_time > maxDate){
+              date_datalist.splice(i, 1);
+            }
+            else {
+              i++;
+            }
+          }
+          present_datalist=JSON.parse(JSON.stringify(date_datalist));
+          if (sel_county.value!='全部') {
+            var i=0;
+            while (i<present_datalist.length) {
+              if ((present_datalist[i].case_county != sel_county.value )){
+                present_datalist.splice(i, 1);
+              }
+              else {
+                i++;
+              }
+            }
+          }
+          for (let i=0;i<present_datalist.length;i++){
+            if (present_datalist_list.includes(present_datalist[i].case_id)){//修改
+              case_table.row(present_datalist_list.indexOf(present_datalist[i].case_id)).data(present_datalist[i]).draw()
+            }
+            else {
+              case_table.rows.add([present_datalist[i]]).draw();
+              present_datalist_list.push(present_datalist[i].case_id)
+            }
+          }
+          var i=0;
+          while (i<present_datalist_list.length) {
+            if (present_datalist.map(x => x.case_id).includes(present_datalist_list[i]) != true) {
+              present_datalist_list.splice(i,1);case_table.rows(i).remove().draw();
+            }
+            else {
+              i++;
+            }
+          }
+          case_table.page(currentPage).draw( false );
+          timenow();
+          sel_county_renew()
+      }
+    }
+
+    function station_table_renew(update=false) {
+      if (update==false) {
+        present_stationdata=JSON.parse(JSON.stringify(stationdata.station));
+        var i=0;
+        while (i<present_stationdata.length) {
+          if ((present_stationdata[i].station_stime < station_minDate | present_stationdata[i].station_stime > station_maxDate) & present_stationdata[i].station_stime!=''){
+            present_stationdata.splice(i, 1);
+          }
+          else {
+            i++;
+          }
+        }
+        present_stationdata_list=present_stationdata.map(x => x.station_num);
+        station_table.clear()
+        station_table.rows.add(present_stationdata)
+        station_table.draw( false );
+        station_table.page(0).draw( false );
+      }
+      else {
+          var currentPage = station_table.page()
+          present_stationdata=JSON.parse(JSON.stringify(stationdata.station));
+          var i=0;
+          while (i<present_stationdata.length) {
+            if ((present_stationdata[i].station_stime < station_minDate | present_stationdata[i].station_stime > station_maxDate) & present_stationdata[i].station_stime!=''){
+              present_stationdata.splice(i, 1);
+            }
+            else {
+              i++;
+            }
+          }
+          for (let i=0;i<present_stationdata.length;i++){
+            if (present_stationdata_list.includes(present_stationdata[i].station_num)){
+              station_table.row(present_stationdata_list.indexOf(present_stationdata[i].station_num)).data(present_stationdata[i]).draw()
+            }
+            else {
+              station_table.rows.add([present_stationdata[i]]).draw();
+              present_stationdata_list.push(present_stationdata[i].station_num)
+            }
+          }
+          var i=0;
+          while (i<present_stationdata_list.length) {
+            if (present_stationdata.map(x => x.station_num).includes(present_stationdata_list[i]) != true) {
+              present_stationdata.splice(i,1);station_table.rows(i).remove().draw();
+            }
+            else {
+              i++;
+            }
+          }
+          station_table.page(currentPage).draw( false );
+          timenow();
+          update_statistics()
+          datapush() 
+      }
+    }
+
+    function patient_table_renew(update=false) {
+      var state=[]
+      var triage=[]
+      if (filter_state.includes("select_onsite")) {state.push('現場')}
+      if (filter_state.includes("select_enroute")) {state.push('送醫中')}
+      if (filter_state.includes("select_arr")) {state.push('已到院')}
+      if (filter_state.includes("")) {state.push('')}
+      if (filter_triage.includes("select_org")) {triage.push('危險')}
+      if (filter_triage.includes("select_ohca")) {triage.push('OHCA')}
+      if (filter_triage.includes("select_red")) {triage.push('極危險')}
+      if (filter_triage.includes("select_gre")) {triage.push('輕傷')}
+      if (filter_triage.includes("")) {triage.push('')}
+      if (update==false) {
+        present_patientdata=JSON.parse(JSON.stringify(patientdata.patient));
+        var i=0;
+        while (i<present_patientdata.length) {
+          if (triage.includes(present_patientdata[i].state.replace(" ",""))==false | state.includes(present_patientdata[i].loca.replace(" ",""))==false){
+            present_patientdata.splice(i, 1);
+          }
+          else {
+            i++;
+          }
+        }
+        present_patientdata_list=present_patientdata.map(x => x.id);
+        patient_table.clear()
+        patient_table.rows.add(present_patientdata)
+        patient_table.draw( false );
+        patient_table.page(0).draw( false );
+      }
+      else {
+          var currentPage = patient_table.page()
+          var i=0;
+          while (i<present_patientdata.length) {
+            if (triage.includes(present_patientdata[i].state.replace(" ",""))==false | state.includes(present_patientdata[i].loca.replace(" ",""))==false){
+              present_patientdata.splice(i, 1);
+            }
+            else {
+              i++;
+            }
+          }
+          
+          for (let i=0;i<present_patientdata.length;i++){
+            if (present_patientdata_list.includes(present_patientdata[i].id)){
+              patient_table.row(present_patientdata_list.indexOf(present_patientdata[i].id)).data(present_patientdata[i]).draw()
+            }
+            else {
+              patient_table.rows.add([present_patientdata[i]]).draw();
+              present_patientdata_list.push(present_patientdata[i].id)
+            }
+          }
+          var i=0;
+          while (i<present_patientdata_list.length) {
+            if (present_patientdata.map(x => x.id).includes(present_patientdata_list[i]) != true) {
+              present_patientdata.splice(i,1);patient_table.rows(i).remove().draw();
+            }
+            else {
+              i++;
+            }
+          }
+
+          patient_table.page(currentPage).draw( false );
+          timenow();
+          update_statistics()
+          hos_table_renew()
+          datapush() 
+          if (document.getElementById('myModal').style.display!='none') {myBtn(select_pid,true)}
+          else if(document.getElementById('idfeature').style.display!='none') {feafun(select_pid)}
+          else if(document.getElementById('myamrecord').style.display!='none') {record(select_pid)}
+      }
+    }
+
+    function hos_table_renew() {
+      hos_data=[]
+      var hos_list=[]
+      var hos_dataob_num={"hos":"","hos_level":"","hosspace":"","hosAllPeo":0,"goHos":{"goHosBLACK":0,"goHosRED":0,"goHosORG":0,"goHosGRE":0},"arrHos":{"arrHosBLACK":0,"arrHosRED":0,"arrHosORG":0,"arrHosGRE":0},"totalHos":{"totalHosBLACK":0,"totalHosRED":0,"totalHosORG":0,"totalHosGRE":0}}; 
+      for (let i = 0;i<patientdata.patient.length;i++) {
+        if (patientdata.patient[i].hos!=""){
+          if (hos_list.includes(patientdata.patient[i].hos)==false)  {   
+            hos_list.push(patientdata.patient[i].hos)  
+            hos_data.push(JSON.parse(JSON.stringify(hos_dataob_num)))
+            hos_data[hos_data.length-1]['hos']=patientdata.patient[i].hos;
+            hos_data[hos_data.length-1]['hos_level']=patientdata.patient[i].hos_level;
+            hos_data[hos_data.length-1]['hosspace']=patientdata.patient[i].hosspace;
+          }
+          var num = hos_list.indexOf(patientdata.patient[i].hos)
+          hos_data[num]['hosAllPeo']+=1;
+          if (patientdata.patient[i].state=="OHCA") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosBLACK+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosBLACK+=1}
+            hos_data[num].totalHos.totalHosRED+=1
+          }
+          else if (patientdata.patient[i].state=="極危險") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosRED+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosRED+=1}
+            hos_data[num].totalHos.totalHosRED+=1
+          }
+          else if (patientdata.patient[i].state=="危險") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosORG+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosORG+=1}
+            hos_data[num].totalHos.totalHosORG+=1
+          }
+          else if (patientdata.patient[i].state=="輕傷") {
+            if (patientdata.patient[i].loca=="已到院") {hos_data[num].arrHos.arrHosGRE+=1}
+            else if (patientdata.patient[i].loca=="送醫中") {hos_data[num].goHos.goHosGRE+=1}
+            hos_data[num].totalHos.totalHosGRE+=1
+          }
+        }
+      }
+      hos_table.clear()
+      hos_table.rows.add(hos_data)
+      hos_table.draw( false );
+    }
+
+    function sel_county_renew() {
+      var sel_countyget=[]
+      var old_sel_countyget;
+      var select_value=sel_county.value
+      for(let i=0;i<random_case_table_data.length;i++) {
+        if (sel_countyget.includes(random_case_table_data[i].case_county)==false & random_case_table_data[i].case_county!="") {
+          sel_countyget.push(random_case_table_data[i].case_county)
+        }
+      }
+      for (let i=0;i<county_order.length;i++)  {
+        if (sel_countyget.includes(county_order[i])) {
+          sel_countyget.push(sel_countyget.splice(sel_countyget.indexOf(county_order[i]),1)[0])
+        }
+      }
+      old_sel_countyget = sel_county.innerText.split("\n")
+      if (String(old_sel_countyget) != String(sel_countyget)) {
+        $('.country_option').remove()
+        for(let i=0;i<sel_countyget.length;i++) {
+          sel_county.innerHTML=sel_county.innerHTML+"<option value='" + sel_countyget[i] + "' class='country_option'>" + sel_countyget[i] + "</option>"
+        }
+        if(sel_countyget.includes(select_value)){
+          sel_county.value = select_value;
+        }
+      }
+    }
+
+    function filt_case(){
+      var st=document.getElementById('sdate').value;
+      var et=document.getElementById('edate').value;
+      minDate= st=="" ? '0000/00/00 00:00:00' : st.replaceAll('-','/') + ' 00:00:00';
+      maxDate= et=="" ? '9999/99/99 99:99:99' : et.replaceAll('-','/') + ' 24:00:00';
+      case_table_renew()
+    }
+    function filt_station(){
+      var st=document.getElementById('station_sdate').value;
+      var et=document.getElementById('station_edate').value;
+      station_minDate= st=="" ? '0000/00/00 00:00:00' : st.replaceAll('-','/').replace('T'," ") + ':00';
+      station_maxDate= et=="" ? '9999/99/99 99:99:99' : et.replaceAll('-','/').replace('T'," ") + ':99';
+      station_table_renew()
+    }
+    function select_toggle(id) {
+        if (id == "select_all_triage" & filter_triage.length!=5){
+          document.getElementById("select_ohca").src="material/square_select_ohca_true.png";
+          document.getElementById("select_red").src="material/square_select_red_true.png";
+          document.getElementById("select_org").src="material/square_select_org_true.png";
+          document.getElementById("select_gre").src="material/square_select_gre_true.png";
+          filter_triage=['select_ohca','select_red','select_org','select_gre','']
+        }
+        else if(filter_triage.includes(id) & id != "select_all_triage") { 
+          document.getElementById(id).src="material/Rectangle_" + id + "_false.png";
+          filter_triage.splice(filter_triage.indexOf(id),1)
+        } 
+        else if (id != "select_all_triage") {
+          document.getElementById(id).src="material/square_" + id + "_true.png";
+          filter_triage.push(id);
+        }
+        if (filter_triage.length==4 & filter_triage.includes('')==false) {
+          filter_triage=['select_ohca','select_red','select_org','select_gre','']
+        }
+        else if (filter_triage.length!=5 & filter_triage.includes('')) {
+          filter_triage.splice(filter_triage.indexOf(''),1)
+        }
+        patient_table_renew()
+    }
+    function select_state(id) {
+      if (id=='select_all' & filter_state.length!=3) {
+        filter_state=["select_onsite",'select_enroute','select_arr']
+        document.getElementById('select_onsite').classList.remove("unselect_state");
+        document.getElementById('select_enroute').classList.remove("unselect_state");
+        document.getElementById('select_arr').classList.remove("unselect_state");
+        if (filter_state.length==3 & filter_state.includes('')==false) {
+          filter_state=["select_onsite",'select_enroute','select_arr','']
+        }
+        else if (filter_state.length!=4 & filter_state.includes('')) {
+          filter_state.splice(filter_state.indexOf(''),1)
+        }
+        patient_table_renew()
+      }
+      else if (id=='select_onsite' | id=='select_enroute' | id=='select_arr') {
+        if (filter_state.includes(id)) {
+          filter_state.splice(filter_state.indexOf(id),1)
+          document.getElementById(id).classList.add("unselect_state");
+        }
+        else {
+          filter_state.push(id);
+          document.getElementById(id).classList.remove("unselect_state");
+        }
+        if (filter_state.length==3 & filter_state.includes('')==false) {
+          filter_state=["select_onsite",'select_enroute','select_arr','']
+        }
+        else if (filter_state.length!=4 & filter_state.includes('')) {
+          filter_state.splice(filter_state.indexOf(''),1)
+        }
+        patient_table_renew()
+      }
+    }
+    function casestate_btn(cid) {
+      case_id = cid;
+      $('.station_page').css('display',''); 
+      $('.patient_page').css('display','none'); 
+      document.getElementById("APP").style.display = "none";
+      document.getElementById('main_BNdiv').style.display = "block";
+      document.getElementById("main_caselist").style.display = "none";
+      document.getElementById("footer").style.display = "none";
+      document.getElementById('casePushID').innerHTML=case_id;
+      pagination='station'
+      station_table_init(cid)
+    }
+
+    function station_btn(snum) {
+      station_num = snum
+      pagination='patient'
+      $('.patient_page').css('display',''); 
+      $('.station_page').css('display','none'); 
+      var patient_table_wrapper=document.getElementById('patient_table_wrapper')
+      if (patient_table_wrapper!=null) {
+        patient_table_wrapper.parentElement.removeChild(patient_table_wrapper)
+      }
+      var hos_table_wrapper=document.getElementById('hos_table_wrapper')
+      if (hos_table_wrapper!=null) {
+        hos_table_wrapper.parentElement.removeChild(hos_table_wrapper)
+      }
+      var table=document.createElement('table');
+      table.id='patient_table';table.classList='display dtn-conrtol';
+      document.getElementById('home').append(table)
+      var tableh=document.createElement('table');
+      tableh.id='hos_table';tableh.classList='display dtr-control dataTable no-footer';
+      document.getElementById('menu1').append(tableh)
+      patient_table_init(snum)
+    }
+    function back_station_btn() {
+      changepage('patient')
+      pagination='station'
+      $('.station_page').css('display',''); 
+      $('.patient_page').css('display','none'); 
+      var station_table_wrapper=document.getElementById('station_table_wrapper')
+      if (station_table_wrapper!=null) {
+        station_table_wrapper.parentElement.removeChild(station_table_wrapper)
+      }
+      var table=document.createElement('table');
+      table.id='station_table';table.classList='display dtn-conrtol';
+      document.getElementById('station_content').append(table)
+      station_table_init()
+    }
+    function update_statistics() {
+      if (pagination == 'station'){
+      document.getElementById('casePushNAME').innerHTML=stationdata.case_name;
+      document.getElementById('casePushTIME').innerHTML=stationdata.case_time.slice(stationdata.case_time.search('/')+1);
+      document.getElementById('casePushCOUNTY').innerHTML=stationdata.case_county;
+      document.getElementById('casePushSTATE').innerHTML=stationdata.case_state;
+      document.getElementById('casePushCASETIME').innerHTML=stationdata.cs_startime.slice(stationdata.cs_startime.search('/')+1);
+      }
+      else {
+      document.getElementById('casePushNAME').innerHTML=stationdata.case_name;
+      document.getElementById('casePushTIME').innerHTML=stationdata.case_time.slice(stationdata.case_time.search('/')+1);
+      document.getElementById('casePushCOUNTY').innerHTML=stationdata.case_county;
+      document.getElementById('casePushSTATE').innerHTML=stationdata.case_state;
+      document.getElementById('casePushCASETIME').innerHTML=stationdata.cs_startime.slice(stationdata.cs_startime.search('/')+1);
+      }
+    }
+
+    function sname(obj) {
+      var station_name = $(obj).text();
+      document.getElementById('stationPushNAME').innerHTML=station_name;  
+    }
+    function changepage(pageid) {
+      if (pagination!=pageid) {
+        pagination=pageid;
+        $('.nav-item').removeClass('nav-item_selected')
+        document.getElementById(pageid).classList.add("nav-item_selected");
+        $('.changepage').addClass('displaynone')
+        if (pageid=='patient') {home.classList.remove('displaynone')}
+        else if (pageid=='hos') {menu1.classList.remove('displaynone')}
+      }
+    }
+    function datapush() { 
+      if (pagination == 'station'){
+        let tot=parseInt(stationdata.station[0].station_totpeo.black)+parseInt(stationdata.station[0].station_totpeo.red)+parseInt(stationdata.station[0].station_totpeo.orange)+parseInt(stationdata.station[0].station_totpeo.green)
+        document.getElementById('pushgary_data').innerHTML=String(tot)
+        document.getElementById('pushohca_data').innerHTML=String(stationdata.station[0].station_totpeo.black);
+        document.getElementById('pushred_data').innerHTML=String(stationdata.station[0].station_totpeo.red);
+        document.getElementById('pushorg_data').innerHTML=String(stationdata.station[0].station_totpeo.orange);
+        document.getElementById('pushgre_data').innerHTML=String(stationdata.station[0].station_totpeo.green);
+        document.getElementById('pushrog_value').innerHTML=tot==0 ? '_' : String(((parseInt(stationdata.station[0].station_totpeo.red)+parseInt(stationdata.station[0].station_totpeo.orange)+parseInt(stationdata.station[0].station_totpeo.green))/tot*100).toFixed(1));
+        document.getElementById('pushohca_value').innerHTML=tot==0 ? '_' : String((parseInt(stationdata.station[0].station_totpeo.black)/tot*100).toFixed(1));
+        let pushenroute=parseInt(stationdata.station[0].station_rouhos.black)+parseInt(stationdata.station[0].station_rouhos.red)+parseInt(stationdata.station[0].station_rouhos.orange)+parseInt(stationdata.station[0].station_rouhos.green)
+        let pusharrive=parseInt(stationdata.station[0].station_inhos.black)+parseInt(stationdata.station[0].station_inhos.red)+parseInt(stationdata.station[0].station_inhos.orange)+parseInt(stationdata.station[0].station_inhos.green)
+        let pushnothos=parseInt(stationdata.station[0].station_nohos.black)+parseInt(stationdata.station[0].station_nohos.red)+parseInt(stationdata.station[0].station_nohos.orange)+parseInt(stationdata.station[0].station_nohos.green)
+        document.getElementById('pushtotal_value').innerHTML=tot==0 ? '_' : String(((pushenroute+pusharrive)/tot*100).toFixed(1));
+        document.getElementById('pushenroute_value').innerHTML=String(pushenroute);
+        document.getElementById('pushenroute_p').innerHTML=tot==0 ? '_' : String((pushenroute/tot*100).toFixed(1));
+        document.getElementById('pushenroute_valuepho').innerHTML=String(pushenroute);
+        document.getElementById('pushenroute_ppho').innerHTML=tot==0 ? '_' : String((pushenroute/tot*100).toFixed(1));
+        document.getElementById('pusharrive_value').innerHTML=String(pusharrive);
+        document.getElementById('pusharrive_p').innerHTML=tot==0 ? '_' : String((pusharrive/tot*100).toFixed(1));
+        document.getElementById('pusharrive_valuepho').innerHTML=String(pusharrive);
+        document.getElementById('pusharrive_ppho').innerHTML=tot==0 ? '_' : String((pusharrive/tot*100).toFixed(1));
+        document.getElementById('pushnothos_value').innerHTML=String(pushnothos);
+        document.getElementById('pushnothos_p').innerHTML=tot==0 ? '_' : String((pushnothos/tot*100).toFixed(1));
+        document.getElementById('pushnothos_valuepho').innerHTML=String(pushnothos);
+        document.getElementById('pushnothos_ppho').innerHTML=tot==0 ? '_' : String((pushnothos/tot*100).toFixed(1));
+        document.getElementById('pusharrve_value').innerHTML=stationdata.cartotal;
+        document.getElementById('pusharrveh_valuepho').innerHTML=stationdata.cartotal;
+      }
+      else{
+        document.getElementById('pushgary_data').innerHTML=patientdata.patient.length;
+        var stat=[0,0,0,0];
+        var enroute_value = 0;
+        var arrive_value = 0;
+        var nothos_value = 0;
+        var unik=[]
+        for(let i=0;i<patientdata.patient.length;i++)
+        {
+          if (patientdata.patient[i].state=="OHCA") {stat[0]+=1}
+          else if (patientdata.patient[i].state=="極危險") {stat[1]+=1}
+          else if (patientdata.patient[i].state=="危險") {stat[2]+=1}
+          else if (patientdata.patient[i].state=="輕傷") {stat[3]+=1}
+
+          if (patientdata.patient[i].loca.replace(" ","")=="送醫中"){ enroute_value+=1 }
+          if (patientdata.patient[i].loca.replace(" ","")=="已到院"){ arrive_value+=1 }
+          if (patientdata.patient[i].loca.replace(" ","")=="現場"){ nothos_value+=1 }
+          if (unik.includes(patientdata.patient[i].car)==false & patientdata.patient[i].car!="") {
+            unik.push(patientdata.patient[i].car)
+          }
+        }
+        document.getElementById('pushohca_data').innerHTML=String(stat[0]);
+        document.getElementById('pushred_data').innerHTML=String(stat[1]);
+        document.getElementById('pushorg_data').innerHTML=String(stat[2]);
+        document.getElementById('pushgre_data').innerHTML=String(stat[3]);
+        document.getElementById('pushrog_value').innerHTML=patientdata.patient.length==0 ? '_' : String(((stat[1]+stat[2]+stat[3])/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pushohca_value').innerHTML=patientdata.patient.length==0 ? '_' : String((stat[0]/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pushtotal_value').innerHTML=patientdata.patient.length==0 ? '_' : String(((enroute_value+arrive_value)/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pushenroute_value').innerHTML=String(enroute_value);
+        document.getElementById('pushenroute_p').innerHTML=patientdata.patient.length==0 ? '_' : String((enroute_value/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pushenroute_valuepho').innerHTML=String(enroute_value);
+        document.getElementById('pushenroute_ppho').innerHTML=patientdata.patient.length==0 ? '_' : String((enroute_value/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pusharrive_value').innerHTML=String(arrive_value);
+        document.getElementById('pusharrive_p').innerHTML=patientdata.patient.length==0 ? '_' : String((arrive_value/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pusharrive_valuepho').innerHTML=String(arrive_value);
+        document.getElementById('pusharrive_ppho').innerHTML=patientdata.patient.length==0 ? '_' : String((arrive_value/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pushnothos_value').innerHTML=String(nothos_value);
+        document.getElementById('pushnothos_p').innerHTML=patientdata.patient.length==0 ? '_' : String((nothos_value/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pushnothos_valuepho').innerHTML=String(nothos_value);
+        document.getElementById('pushnothos_ppho').innerHTML=patientdata.patient.length==0 ? '_' : String((nothos_value/patientdata.patient.length*100).toFixed(1));
+        document.getElementById('pusharrve_value').innerHTML=String(unik.length);
+        document.getElementById('pusharrveh_valuepho').innerHTML=String(unik.length);
+      }
+    } 
+    function timenow() {
+        var date = new Date;
+        var str="";
+        str += date.getHours()<12?"上午 ":"下午 ";
+        str += ('0' + date.getHours()).slice(-2) + ' : ' + ('0' + date.getMinutes()).slice(-2) + ' : ' + ('0' + date.getSeconds()).slice(-2);
+        document.getElementById('timenow').innerHTML=str;
+    }
+    function myBtn(id,update=false) {
+      select_pid=id;
+      var data_temp;
+      var largepicchoosediv = document.getElementById('largepicchoosediv')
+      for(let i=0;i<present_patientdata.length;i++) {
+        if (present_patientdata[i].id==id){
+          data_temp=present_patientdata[i]
+          break
+        }
+        if (i==present_patientdata.length-1){
+          alert('error,找不到data,還請您重新整理')
+          continue
+        }
+      }
+      document.getElementById("myModal").style.display = "block";
+      document.getElementById("hide").style.display = "block";
+      if (update==false) {
+        console.log(data_temp);
+        largepicchoosediv.innerHTML=""
+        if (data_temp.pho.length!=0) {
+          document.getElementById('largepicdiv').innerHTML='<img src="' + data_temp.pho + '" id="delphobig" onclick="enlarge_mainphoto()">'
+        }
+        else {
+          document.getElementById('largepicdiv').innerHTML='<img src="material/nodata.png" id="delphobig" onclick="enlarge_mainphoto()">'
+        }
+      }
+      if (document.getElementById('delphobig').src.includes("nodata.png") & data_temp.pho.length!=0) {
+        document.getElementById('largepicdiv').innerHTML='<img src="' + data_temp.pho + '" id="delphobig" onclick="enlarge_mainphoto()">'
+        }
+      for(let i=0;i<data_temp.pho.length;i++) {
+        if (largepicchoosediv.innerHTML.includes(data_temp.pho)==false) {
+          var img=document.createElement('img');
+          img.src=data_temp.pho;img.setAttribute('onclick', 'chmainphoto("' + data_temp.pho + '")');
+          largepicchoosediv.appendChild(img)
+        }
+      }
+      for (let i=0;i<largepicchoosediv.childElementCount;i++) {
+        var rmimg=largepicchoosediv.children[i]
+        if (data_temp.pho.includes(rmimg.src)==false){
+          largepicchoosediv.removeChild(rmimg)
+        }
+      }
+    }
+    function record(id) {
+      select_pid=id;
+      var data_record;
+      var recorddata
+      for(let i=0;i<present_patientdata.length;i++)
+      {
+        if (present_patientdata[i].id==id){
+          data_record=present_patientdata[i]
+          break
+        }
+        if (i==present_patientdata.length-1){
+          alert('error,找不到data,還請您重新整理')
+        }
+      }
+      document.getElementById("myamrecord").style.display = "block";
+      recorddata=!data_record.recor ? '<img src="material/nodata.png">' : '<iframe src="' + data_record.recor + '" id="delpdf"></iframe>'
+      if (document.getElementById("record").innerHTML!=recorddata) {
+        document.getElementById("record").innerHTML=recorddata;
+      }
+    }
+    function feafun(id) {
+      select_pid=id;
+      var data_fea;
+      for(let i=0;i<present_patientdata.length;i++)
+      {
+        if (present_patientdata[i].id==id){
+          data_fea=present_patientdata[i]
+          break
+        }
+        if (i==present_patientdata.length-1){
+          alert('error,找不到data,還請您重新整理')
+          continue
+        }
+      }
+      document.getElementById("idfeature").style.display = "block";
+      document.getElementById('injeveID').innerHTML=data_fea.id;
+      document.getElementById('injeveNAME').innerHTML=data_fea.name;
+      document.getElementById('injevePHONE').innerHTML=data_fea.injevePHONE;
+      document.getElementById('injeveSEX').innerHTML=data_fea.sex;
+      document.getElementById('injeveAGE').innerHTML=data_fea.age;
+      document.getElementById('sittop').innerHTML=data_fea.featureR;
+      document.getElementById('sitdown').innerHTML=data_fea.featureRD;
+    }
+    function hidebox(id){
+      document.getElementById(id).style.display='none';
+      document.getElementById('hide').style.display='none';
+    }
+
+    function enlarge_mainphoto(){
+      var src;
+      for (let i=0; i<document.getElementById('largepicdiv').children.length;i++) {
+        if (document.getElementById('largepicdiv').children[i].src!='') {
+          src=document.getElementById('largepicdiv').children[i].src
+          break
+        }
+      }
+      var div= document.createElement("div");
+      div.id="hide1"
+      div.innerHTML='<img src="' + src + '">' ;
+      div.setAttribute('onclick', 'rmdiv()');
+      document.getElementById("body").append(div);
+    }
+    function rmdiv(id='hide1'){
+      var del=document.getElementById(id)
+          del.parentElement.removeChild(del)
+    }
+    function chmainphoto (url) {
+      var delphobig=document.getElementById('delphobig');
+      delphobig.src=url
+    }
+  </script>
+</body>
+</html>
