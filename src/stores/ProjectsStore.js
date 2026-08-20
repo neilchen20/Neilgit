@@ -216,7 +216,7 @@ export const useProjectsStore = defineStore('projects', () => {
       attributes: {
         projectTitle: "大量傷病患救護管理系統",
         projectDescription: "該專案於三商電腦實習期間完成，負責開發消防署及相關消防單位的網頁儀表板。專案使用 DataTables 用於數據可視化、即時監控與資訊整合，提升消防單位的作業效率。經過允許，對外開放版本採用 Mock Data 進行展示。",
-        projectLink: "https://mcidemo.neilchen.dev/",
+        projectLink: "https://neilchen.dev/mcidemo/index.html",
         projectDate: "2023-04-20",
         projectHighLight: false,
         projectSkill: "HTML, CSS, JavaScript, DataTables.js",
