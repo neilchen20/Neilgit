@@ -78,6 +78,7 @@ const sortedProjects = computed(() => {
       padding: 50px;
       list-style: none;
       text-align: left;
+      max-width: 100%;
       @media (max-width: 991px) {
         max-width: 98%;
         padding: 24px;
