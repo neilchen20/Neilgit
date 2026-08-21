@@ -35,6 +35,10 @@ import { useProjectsStore } from '../stores/ProjectsStore.js'
 
 const projectsStore = useProjectsStore()
 
+if (projectsStore.ProjectsData.length === 0) {
+  projectsStore.setProjects(projectsStore.mockData)
+}
+
 onMounted(async () => {
   try {
     const response = await axios.get(
@@ -55,6 +59,12 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+#home,
+#featured-projects,
+#projects {
+  scroll-margin-top: 88px;
+}
+
 #home {
   .row {
     gap: 90px;

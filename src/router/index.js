@@ -1,23 +1,42 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
-// 定義路由
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../views/Home.vue'), // 應用懶加載
+    component: () => import('../views/Home.vue'),
   },
-  // {
-  //   path: '/projects',
-  //   name: 'Projects',
-  //   component: () => import('../views/Projects.vue'), // 應用懶加載
-  // },
-];
+  {
+    path: '/projects/cloud-his',
+    name: 'CloudHisCaseStudy',
+    component: () => import('../views/projects/CloudHisCaseStudy.vue'),
+  },
+]
 
-// 創建路由實例
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
 
-export default router;
+    if (to.hash) {
+      return new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          resolve({
+            el: to.hash,
+            top: 88,
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+              ? 'auto'
+              : 'smooth',
+          })
+        })
+      })
+    }
+
+    return { top: 0 }
+  },
+})
+
+export default router

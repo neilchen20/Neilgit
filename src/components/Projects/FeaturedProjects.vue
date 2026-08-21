@@ -14,9 +14,10 @@
             <p class="card-text mb-5">{{ project.projectDescription }}</p>
           </div>
           <div class="d-flex justify-content-between align-items-center w-100" style="right: 16px; bottom: 16px">
-            <small class="text-body-secondary">{{ project.projectDate }}</small>
+            <small class="text-body-secondary">{{ project.projectDate }}{{ project.id === 10 ? ' ~ 至今' : '' }}</small>
             <div class="btn-group">
-              <a :href="project.projectLink" class="btn btn-sm btn-outline-secondary" target="_blank">View</a>
+              <RouterLink v-if="hasCaseStudy(project)" :to="{ name: 'CloudHisCaseStudy' }" class="btn btn-outline-secondary project-link"> 查看案例 </RouterLink>
+              <a v-else :href="project.projectLink" class="btn btn-outline-secondary project-link" target="_blank" rel="noopener noreferrer">查看網站</a>
             </div>
           </div>
         </div>
@@ -53,6 +54,10 @@ const props = defineProps({
     },
   },
 })
+
+function hasCaseStudy(project) {
+  return project.projectTitle === '遠傳雲端醫療資訊系統'
+}
 </script>
 
 <style lang="scss">
@@ -87,6 +92,18 @@ const props = defineProps({
         aspect-ratio: 16 / 9;
         object-fit: cover;
         border-radius: 16px;
+      }
+      .project-link {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        padding: 9px 14px;
+        font-weight: 600;
+
+        &:focus-visible {
+          outline: 3px solid #b9c6ff;
+          outline-offset: 3px;
+        }
       }
       .card-body {
         display: flex;

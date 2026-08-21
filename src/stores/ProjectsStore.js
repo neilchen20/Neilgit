@@ -238,6 +238,7 @@ export const useProjectsStore = defineStore('projects', () => {
     {
       id: 10,
       attributes: {
+        id: 10,
         projectTitle: "遠傳雲端醫療資訊系統",
         projectDescription: "以 Vue 3、TypeScript 與 Quasar Framework 開發的雲端醫療資訊系統，涵蓋掛號、看診、醫囑處方、醫師排班、藥品管理、檢驗及診所基本設定等醫療作業流程。主要負責既有功能維護與擴充、REST API 串接、表單與資料驗證、PWA Offline 功能，以及跨頁狀態與操作流程優化；並針對離線環境中的病患敏感資料實作 IndexedDB AES 加密儲存機制。",
         projectLink: "https://enterprise.fetnet.net/content/ebu/tw/solution/5g-innovation/innovation/5g-telemedicine/cloudHIS.html?WTshort_k=P-U5SOxX0XX1&WTchannel=WEB&CMP&gad_campaignid=21098300791&gbraid=0AAAAAC7ZfXCwmyHFDiIwRoh78hXK57SkC",
