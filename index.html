@@ -1,63 +1,15 @@
-<!DOCTYPE html>
-<html lang="zh-tw">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="Neil Chen,前端開發,個人網站,作品集,新鮮人">
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/jpeg" href="/src/assets/img/IMG_0873.JPG" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="keywords" content="Neil Chen,Neilc,前端開發,個人網站,作品集">
     <meta name="description" content="我是Neil Chen，一位社會新鮮人，專注於個人網站開發。我擅長於Web開發、測試和打包，並能夠將網站託管並設定DNS，能夠獨立完成整個網站開發流程。">
-    <link rel="icon" href="./nlcn/public/logo.ico">
-    <title>Neil Chen</title>
-</head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BSL7KM6N55"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-BSL7KM6N55');
-</script>
-<style>
-    html{
-        max-width: 100%;
-        width: 100%;
-    }
-    body{
-        background-image: url('./nlcn/src/assets/bgt.JPG');
-        max-width: 100%;
-        width: 100%;
-        margin: 0;
-    }
-    .btnani {
-        color: rgb(255, 255, 255);
-        cursor: pointer;
-        font-size: 20px;
-        position: relative;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
-    .btnani:after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        transform: scaleX(0);
-        height: 2px;
-        bottom: -3px;
-        left: 0;
-        background-color: #e46510d2;
-        transform-origin: bottom right;
-        transition: transform 0.25s ease-out;
-    }
-    .btnani:hover:after {
-        transform: scaleX(1);
-        transform-origin: bottom left;
-    }
-</style>
-<body>
-    <img style="width: 100%;z-index: -1;opacity: 35%;position: absolute;" src="./nlcn/src/assets/bgt.JPG" alt="Image"/>
-    <h1 style="color: antiquewhite;top: 20px;position: relative;">個人網站開發中。。。近期測試完即將上版</h1>
-    <a class="btnani" href="mailto:neil.cwn20@gmail.com">neil.cwn20@gmail.com</a><br>
-    <a class="btnani" href="https://nlcn.me/demo/DSMdemo">大量傷病患救護管理系統</a>
-</body>
+    <title>Neil Chen Website</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

@@ -1,0 +1,300 @@
+*{font-size: x-large;font-weight: bold;margin:0;padding:0;list-style:none;text-decoration:none;box-sizing: border-box;user-select: none;font-family: myFirstFont;}
+.left{float:left}.right{float:right}.text_right{text-align:right}
+html{height: auto;width: 100%;background-color: #d2ecfa;}
+body{height: auto;width: 100%;background-color: #d2ecfa6a;background-image: url('../material/bg_head.png');background-repeat: repeat-x;}
+header{position: sticky;width: 100%;height: 100px;padding: 5px 1%;top: 0;z-index: 2;background-color: #d2ecfa;background-image: url('../material/bg_head.png');background-repeat: repeat-x;}
+main{width: 100%;height: 90%;position: relative;margin-top: 20px;display: flex;}
+/*position: -webkit-sticky;*/
+
+@media (max-width: 940px){
+  * {font-size: medium;}
+  header{height: 75px;}
+  
+  #main_caselist{margin-bottom: 10%;}
+}
+@media (max-width: 780px){
+  main{margin-top: 0px;}
+}
+/*主頁上方標題*/
+#logodiv{display: inline; height: 100%;}
+#rwdlogo{position: relative;top: 10%;height: 100%;cursor: pointer;}
+#timeid{display: flex;align-items: center;height: 100%;margin-right:2% ;font-size: large;color: #0044BC;}
+#APP{margin-right:1%;width: 7%;}
+#station_title{margin-right:1%;width: 9%;}
+#caselist{margin-right:1%;width: 7%;}
+#logout{margin-right:2% ;width: 10%}
+.custom-btn {height: 70%;top: 15%;cursor: pointer;font-size: 1.5vw;white-space: nowrap;color: #fff;padding: 10px;font-family: 'Lato', sans-serif;font-weight: 900;  font-style: normal;text-shadow: 0px -1px 0px rgba(0,0,0,0.4);text-decoration: none;position: relative;display: flex;box-shadow: inset 0px 1px 0px rgba(255,255,255,1),0px 1px 3px rgba(0,0,0,0.3);outline: none;border: 1px solid #ba6;    border-color: #96C6CF;background: #5EA1A9;border-radius: 5px;align-items: center;justify-content: center;}
+.custom-btn:active{  -webkit-transform: translateY(2px);  transform: translateY(2px);}
+#dateperiod{margin-right: 8%;}
+@media (max-width: 720px)
+{
+  /*主頁上方標題*/
+  header{position: relative;width: 100%;height: auto;display: inline-block;}
+  #logodiv{display: inline; width: 100%;    height: auto;}
+  #rwdlogo{position: relative;height: auto;width: 100%;}
+  #timeid{display: flex;align-items: center;height: 100%;margin-left:2% ;font-size: large;}
+  .custom-btn {font-size: 15px;}
+  #dateperiod{margin-right: 0%;}
+  #APP{width: auto;}
+  #station_title{width: auto;}
+  #caselist{width: auto;}
+  #logout{width: auto;}
+  #county{margin-right: 20px;}
+}
+
+
+#main_caselist{display: block;position: relative;width: 100%;height: auto;z-index: 1;margin-bottom: 10%;}
+#main_BNdiv{display: none;width: 100%;height: 100%;top: 10px;position: relative;margin-bottom: 10%;}
+.sedate{margin: 0px 10px;}
+/*maintable*/
+.dataTables_wrapper{background-color: transparent;}
+.dataTable thead{color: white;}
+.dataTables_length label{color: rgb(0, 0, 0);}
+.dataTables_length select{color: rgb(0, 0, 0);background-color: white !important;}
+.dataTables_info{color: rgb(0, 0, 0) !important;}
+.dataTables_filter{margin-bottom: 5px;}
+.dataTables_filter label{color: rgb(0, 0, 0);}
+#main_table{position: relative;width: 90%;margin-left: 5%;height: auto;top: 10px;}
+.display{text-align: center;background-color: #5EA1A9;}
+.display  tbody tr:nth-child(odd){background-color: #F4EFDC;}
+.state_but_div{display: flex;justify-content: center;}
+.state_but{cursor: pointer;white-space: nowrap;color: #fff;padding: 5px 10px;font-family: 'Lato', sans-serif;font-weight: 900;  font-style: normal;text-shadow: 0px -1px 0px rgba(0,0,0,0.4);text-decoration: none;position: relative;display: flex;box-shadow: inset 0px 1px 0px rgba(255,255,255,1),0px 1px 3px rgba(0,0,0,0.3);outline: none;border: 1px solid #ba6;border-color: #7c7c7c;background: #0679D2;border-radius: 50px;align-items: center;justify-content: center;}
+
+
+/*日期篩選*/
+#station_date{margin-bottom: 1%;display: inline-flex;}
+.station_name{color: rgb(0, 128, 255);border: none;cursor: pointer;text-decoration:underline;background-color: rgba(0, 0, 0, 0);}
+#station_date_input{display: contents;}
+
+@media (max-width: 620px){
+  #station_date{display:contents;}
+  #station_date_input{display: grid;justify-items: end;}
+}
+
+
+
+
+
+
+
+
+#footer{position: fixed;height: 12vh;width: 100%;bottom: 0;z-index: 0;background-image: url('../material/bg_blue.png');display: flex;align-items: flex-end;background-size: 100% 100%;}
+#bg_peo{position:relative;bottom: 0;height: 160%;;margin-left: 2%;}
+
+
+#container{position: relative;width: 100%;height: auto;margin-top: 10px;}
+#indatabox_s{display: none;}
+#tab-content{width: 83%;height: auto;position: relative;margin-left: 2%;margin-top: 10px;}
+#indatarwd{width: 100%;height: 30px;position: relative;display: inline;color:rgb(16, 98, 199);margin-top: 10px;}
+#indata_all{width: 100%;height: 80%;}
+#pagediv{position: relative;width: calc(100% - 20px);margin-left: 20px;display: flex;}
+.nav-item{margin-right: 10px;box-shadow: 0px 0px 3px rgb(149 149 149);width: 200px;height: 65px;display: flex;justify-content: center;align-items: center;color: #0d6efd;background-color: rgb(185,221,252);border-radius: 10px;}
+.nav-item:hover {box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2);}
+.nav-item_selected{color: black;background-color: rgb(113,185,255);}
+.actived{background-color: #fff;    color: #495057;}
+#indatabox_l{position: fixed;right: 0;width: 13%;padding-right: 1%;height: 65%;}
+.indatabox_l_box{display: flex;align-items: center;border-radius: 10px;background-color: white;border: 2px solid #dddddd;box-shadow: 5px 5px 5px lightblue;height: 15%;margin-top: 5%;}
+.indatabox_l_box_icon{height: 100%;display: flex;align-items: center;margin-left: 5%;width: 25px;}
+.indatabox_l_box_icon img{width:25px;height:25px;}
+.indatabox_l_value{text-align: right;font-size: 1.3vw;width: calc(90% - 25px);}
+.indatabox_l_value a{font-size: 1.3vw}
+.indatabox_l_value_s{text-align: right;font-size: 1.9vw;width: calc(90% - 25px);}
+@media (max-width: 650px){
+  .nav-item{width: 170px;height: 50px;}
+  #date{float: right;    margin-top: 5px;}
+
+}
+@media (max-width: 1305px){
+  #tab-content {width: 90%;margin-left: 5%;}
+  #indatabox_s{position: relative;width: 90%;height: 200px;margin-left: 8%;display: flex;flex-direction: column;}
+  .indatabox_s_box{display: flex;align-items: center;padding: 3px;position: relative;width:43%;margin-left: 3%;height: calc(50% - 20px);margin-top: 10px;text-align: center;border: 2px solid #dddddd;border-radius: 5px;box-shadow: 5px 5px 5px lightblue;background-color: white;}
+  #indatabox_l{display: none;}
+}
+
+/*案號*/
+.green{color: rgb(39,140,86);}
+#statistics{margin-left: 1%;position: relative;width: 45%;display: inline-block;}
+.lstatistics{position: relative;width: 50%;display: inline-table;height: 30px}
+.rstatistics{position: relative;width: 50%;display: inline-table;height: 30px;}
+.ststatistics{width: 100%;}
+#colordata{position: relative;right:0;width: 53%;background-color: rgb(255, 255, 255);background-color: #d2ecfa;}
+#colorcube{position: relative;display: flex;}
+#onsitedata{position: relative;margin-top: 20px;width: 99%;max-width: 880px;display: flex;justify-content: space-between;}
+.cube{display: flex;position: relative;margin-left: 2%;width: 16.5%;height: 50px;border-radius: 10px;align-items: center;justify-content: center;}
+#ondata{position: absolute;width: 20%;display: inline-flex;}
+.anvalue{position: relative;display: inline;}
+@media (max-width: 1305px){
+  #colordata{position: relative;width: 82%;height: 100px;margin-top: 15px;margin-left:8%;display: inline-table;}
+  #statistics {position: relative;width: 80%;height: 120px;margin-left: 10%;}
+  #onsitedata{width: 100%;height: 60px;display: block;}
+  .cube{height: 40px;}
+  #ondata{position: absolute;width: 20%;display: inline-flex;color:rgb(16, 98, 199);}
+  .anvalue{width: 70%;float: right;display: flex;align-items: flex-end;justify-content: flex-end;margin: 2px 0px;}
+}
+@media (max-width: 600px){
+  #statistics {width: 95%; margin-left: 5%;}
+  #ondata{width: 25%;}
+}
+
+#gray{color: black;background-color: rgb(180, 191, 196);}
+/*OHCA*/.black{color: white;background-color: rgb(59,59,59);}
+/*極危險*/.red{background-color: rgb(224, 97, 111);}
+/*危險*/.orange{background-color: rgb(244, 210, 57);}
+/*輕傷*/.greenyellow{background-color: rgb(128, 185, 90);}
+
+
+/*colordata-colorbutton*/
+.point {position: relative;border: none;padding: 7px;margin: 0px 5px 0px 1px;align-self: center;border-radius: 3px;cursor: default;vertical-align: super}
+
+.value{position: relative;width:auto;top: 60px;left: 40%;font-weight: bolder;}
+.ohcavalue{position: relative;left: 15%;width: auto;top: 60px;font-weight: bolder;}
+.total{position: relative;left: 71%;width: auto;top: 60px;font-weight: bolder;}
+
+
+/*main*/
+.displaynone{display: none;}
+.triage{display: inline-block;padding: 5px 10px;border-radius: 5px;}
+.greenttriage {background-color: rgb(128, 185, 90);}
+.orangettriage {background-color: rgb(244, 210, 57);}
+.redttriage {background-color: rgb(224, 97, 111);} 
+.ohcattriage {background-color: rgb(59, 59, 59);color: #f1f1f1;}
+#station_table_wrapper{margin-top: 10px;}
+/******0831 15:15--- 移除現場數據色塊 hover*/
+#selectBTN{position: relative;width: 100%;height: 40px;}
+#selectL{width: 50%;height: 30px;display: inline-block;display: flex;justify-content: flex-end;align-items: center;}
+#selectR{width: 49%;height: 30px;display: inline-block;display: flex;justify-content: flex-end;}
+.select_triage{margin:0% 1.5%;cursor: pointer;height: 100%;}
+
+#select_all {transition: all 0.8s;overflow: hidden;cursor: pointer;}
+#select_all:after {content: "";background: white;display: block;position: absolute;padding-top: 300%;padding-left: 300%;margin-left: -20px!important;margin-top: -120%;opacity: 0;transition: all 0.8s;border-radius: 10px;}
+#select_all:active:after {padding: 0;margin: 0;opacity: 1;transition: 0s}
+.select_state{color: white;background-image: linear-gradient(to right, #005fe0 0%, #0099b9 100%);border-radius: 10px;width: auto;margin-right: 3%;font-size: large;padding: revert;position: relative;cursor: pointer;}
+.unselect_state{background-image: none;color: rgb(104 104 104);}
+
+
+@media (max-width: 700px){
+  #selectBTN {height: 80px}
+  #selectL{width: 100%;}
+  #selectR{width: 100%;margin-top: 15px;}
+}
+
+
+
+
+
+
+
+
+
+
+
+/*傷患後送數據*/
+#straight{font-weight: bolder;font-size: larger;display: flex;justify-content: center;font-size: 1.9vw;color:rgb(16, 98, 199);}
+
+
+.enroutebtn {display: inline-block;border-radius: 4px;background-color: #0000;border: 2px solid #8fccf1;
+  box-shadow: 5px 5px 5px lightblue;color: rgb(0, 0, 0);text-align: left;padding: 15px 5px 15px 5px;width: 90%;transition: all 0.5s;cursor: pointer;}
+.arrivebtn {display: inline-block;border-radius: 4px;background-color: #0000;border: 2px solid #8fccf1;
+  box-shadow: 5px 5px 5px lightblue;color: rgb(0, 0, 0);text-align: left;padding: 15px 5px 15px 5px;width: 90%;transition: all 0.5s;cursor: pointer;}
+.arrivebtn span {cursor: pointer;display: inline-block;position: relative;transition: 0.5s;color:rgb(94,154,107)}
+.arrivebtn span:after {content: '\00bb';position: absolute;opacity: 0;top: 0;right: -20px;transition: 0.5s;}
+.arrivebtn:hover span {padding-top: 5px;font-size: 18px;}
+.nothosbtn {display: inline-block;border-radius: 4px;background-color: #0000;border: 2px solid #8fccf1;
+  box-shadow: 5px 5px 5px lightblue;color: rgb(0, 0, 0);text-align: left;padding: 15px 5px 15px 5px;width: 90%;transition: all 0.5s;cursor: pointer;}
+.nothosbtn span {cursor: pointer;display: inline-block;position: relative;transition: 0.5s;color:rgb(94,154,107)}
+.nothosbtn span:after {content: '\00bb';position: absolute;opacity: 0;top: 0;right: -20px;transition: 0.5s;}
+.nothosbtn:hover span {padding-top: 5px;font-size: 18px;}
+.arrvehbtn {display: inline-block;border-radius: 4px;background-color: #0000;border: 2px solid #8fccf1;
+  box-shadow: 5px 5px 5px lightblue;color: rgb(0, 0, 0);text-align: left;padding: 15px 5px 15px 5px;width: 90%;transition: all 0.5s;cursor: pointer;}
+.arrvehbtn span {cursor: pointer;display: inline-block;position: relative;transition: 0.5s;color:rgb(94,154,107)}
+.arrvehbtn span:after {content: '\00bb';position: absolute;opacity: 0;top: 0;right: -20px;transition: 0.5s;}
+.arrvehbtn:hover span {padding-top: 5px;font-size: 18px;}
+#none{display: none;}
+.tablehide{display: none;}
+.inbr{display:block;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*list1特徵照片*/
+#myModal {display: none;position: fixed;z-index: 1;padding-top: 70px;left: 0;top: 0;width: 100%;height: 100%;overflow: auto;background-color: rgb(0,0,0);background-color: rgba(0, 0, 0, 0.251);}
+#modal-content {background-color: #fefefe;border: 1px solid #888;width: 80%;height: 80%;top: 10%;left: 10%;position: absolute;}
+#largepicchoosediv{position: absolute;top: 80%;height: 10%;min-height: 55px;left: 25%;width: 50%;overflow-y: hidden;display: flex;box-shadow: 0px 0px 5px black;}
+#largepicchoosediv img{max-height: 100%;max-width: 100%;width: auto;height: auto;margin-right: 10pt;top: 0;cursor: pointer;}
+#largepicdiv{position: absolute;height: 65%;top: 10%;left: 15%;width: 70%;display: flex;}
+#largepicdiv img{max-height: 100%;max-width: 100%;margin: auto;}
+#delpdf{border-style: none;height: 100%;width: 100%;}
+.scrollho::-webkit-scrollbar-track{background-color: rgba(0,0,0,0);border-radius: 10px;}
+.scrollho::-webkit-scrollbar{width: 13px;background-color: rgba(0,0,0,0);}
+.scrollho::-webkit-scrollbar-thumb{border-radius: 10px;    background-image: -webkit-gradient(linear,right bottom, left top, color-stop(0.44, rgb(208 215 229)), color-stop(0.72, rgb(155 192 240)), color-stop(0.86, rgb(133 162 246)));}
+
+#largepicchoosediv{position: absolute;top: 80%;height: 10%;left: 25%;width: 50%;overflow-y: hidden;display: flex;box-shadow: 0px 0px 5px black;}
+
+/*list1救護紀錄*/
+#myamrecord {display: none;position: fixed;z-index: 1;padding-top: 100px;left: 0;top: 0;width: 100%;height: 100%;overflow: auto;background-color: rgba(0,0,0,0.4);}
+#amrecord-content {background-color: #fefefe;width: 80%;left: 10%;height: 80%;top: 10%;position: absolute;}
+#record{display: flex;justify-content: center;align-items: center;position: absolute;height: 90%;top: 5%;width: 80%;left: 10%;}
+#record img{max-height: 90%;}
+
+
+
+
+
+
+
+
+/*list1傷患資料*/
+.feature {display: none;position: fixed;z-index: 1;padding-top: 100px;left: 0;top: 0;width: 100%;height: 100%;overflow: auto;background-color: rgb(0,0,0);background-color: rgba(0,0,0,0.4);}
+#feature-content {background-color: #fefefe;margin: auto;padding: 1%;border: 1px solid #888;width: 60%;height: 80%;}
+#situation{position: relative;padding: 15px;width: 100%;height: 100%;border-radius: 10px;border: 2px solid #b7b7b7;}
+#sitone{width: 25%;height: 100%;position: relative;}
+#sittitle{color: #1075fa;font-size: x-large;}
+.injeveAId{display: inline-flex;margin-top: 15px;font-size: x-large;}
+.injeveAId_text{font-size: large;}
+#sitline{height:95%;width:75%;position: relative;border-left-style:groove}
+/*list1傷患資料-特徵說明*/
+.sittoptitle{position: relative;left: 20px;color: #1075fa}
+.sitright{position: relative;width: 100%;height: 50%;}
+.sit{border-radius: 5px;border: 2px solid #b7b7b7;width: 88%;left: 12%;position: relative;height: 78%;font-size: 1.3vw;padding: 5px;}
+/*list1傷患資料-補充說明*/
+#sitrightdown{position: relative;width: 80%;height: 43%;}
+.antisibr{display: none;}
+@media (max-width: 950px){
+  #sitone{width: 100%;height: 45%;}
+  #sittitle{float: left;width: 100%;height: 25px;font-size: large;}
+  .injevediv {width: 50%;height: calc(33.3% - 8.3px);float: left;}
+  .injeveAId{margin: 0;font-size: medium;}
+  #sitline{width: 100%;height: 55%;border-left-style: none;border-top-style: groove;padding: 5px}
+  .sittoptitle{font-size: large;width: 20%;float: left;left: 0;}
+  .sibr{display: none;}
+  .injeveAId_text{font-size: medium;}
+  .sit{float: left;width: 76%;left: 2%;height: 80%;}
+  .antisibr{display: block;}
+}
+
+
+
+
+
+
+
+/*遮罩*/
+#hide{width: 100%;top: -100px;height: calc(100% + 100px);position: absolute;}
+#hide1{min-width: 100%;min-height: 100vh;position: fixed;top: 0;left: 0;z-index: 2;overflow-y: auto;background-color: rgba(0,0,0,0.4);display: flex;}
+#hide1 img{margin: auto;max-width: 80vw;max-height: 80vh;}
+#hideapp{justify-content: center;align-items: center;min-width: 100%;min-height: 100vh;position: fixed;top: 0;left: 0;z-index: 2;overflow-y: auto;background-color: rgba(0,0,0,0.4);display: flex;}
+#hideapp a img{margin: auto;max-width: 40vw;max-height: 80vh;}
+#hideapp a{margin: 0 5%;}
+@media (max-width: 500px){
+  #hideapp{flex-direction: column;}
+  #hideapp a img{margin: auto;max-width: 80vw;max-height: 40vh;}
+}

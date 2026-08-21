@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DK+Uloopet:wght@100..400&display=swap');
+:root {
+  font-family: GenYoGothic, Arial;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #fff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  position: relative;
+  min-height: 100%;
+  margin: 0;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  font-family: GenYoGothic, Arial !important;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer {
+  margin-top: auto;
+}
+
+.playwrite-dk-uloopet-400 {
+  font-family: 'Playwrite DK Uloopet', serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.display-1 {
+  font-size: 80px !important;
+}
+.display-2 {
+  font-size: 72px !important;
+}
+.display-3 {
+  font-size: 64px !important;
+}
+h1 {
+  font-size: 56px !important;
+}
+h2 {
+  font-size: 48px !important;
+}
+h3 {
+  font-size: 40px !important;
+}
+h4 {
+  font-size: 32px !important;
+}
+h5 {
+  font-size: 24px !important;
+}
+h6 {
+  font-size: 20px !important;
+}
+@media (max-width: 991px) {
+  .display-1 {
+    font-size: 48px !important;
+  }
+  .display-2 {
+    font-size: 44px !important;
+  }
+  .display-3 {
+    font-size: 40px !important;
+  }
+  h1 {
+    font-size: 36px !important;
+  }
+  h2 {
+    font-size: 32px !important;
+  }
+  h3 {
+    font-size: 30px !important;
+  }
+  h4 {
+    font-size: 28px !important;
+  }
+  h5 {
+    font-size: 22px !important;
+  }
+  h6 {
+    font-size: 16px !important;
+  }
+}
