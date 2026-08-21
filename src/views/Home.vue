@@ -10,12 +10,14 @@
       </div>
     </div>
   </div>
+  <Skills />
   <div class="container-fluid" id="featured-projects">
     <FeaturedProjects :ProjectsHighLight="projectsStore.ProjectsHighLight" />
   </div>
   <div class="container-fluid" id="projects">
     <Projects :ProjectsData="projectsStore.ProjectsData" />
   </div>
+  <ContactCta />
 </template>
 
 <script lang="js" setup>
@@ -23,6 +25,8 @@ import Projects from '../components/Projects/Projects.vue'
 import Banner from '../components/Home/Banner.vue'
 import Avatar from '../components/Home/Avatar.vue'
 import Intro from '../components/Home/Intro.vue'
+import Skills from '../components/Home/Skills.vue'
+import ContactCta from '../components/Home/ContactCta.vue'
 import FeaturedProjects from '../components/Projects/FeaturedProjects.vue'
 import { nextTick, onMounted } from 'vue'
 import axios from 'axios'
