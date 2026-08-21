@@ -1,16 +1,10 @@
 <template>
   <div class="container">
     <div>
-      <h2 class="fw-bold mb-3 mb-lg-0 text-center">TOP PROJECTS</h2>
+      <h2 class="fw-bold mb-3 mb-lg-0 text-center" data-aos="fade-up">TOP PROJECTS</h2>
     </div>
     <div class="d-flex flex-column flex-lg-row gap-4 gap-lg-3 justify-content-center">
-      <div
-        v-for="(project, index) in ProjectsHighLight"
-        :key="project.projectTitle"
-        class="card shadow-sm"
-        data-aos="fade-up"
-        :data-aos-delay="index * 150"
-      >
+      <div v-for="(project, index) in ProjectsHighLight" :key="project.projectTitle" class="card shadow-sm mb-0" data-aos="fade-up" :data-aos-delay="index * 150">
         <div class="card-img-top">
           <img v-if="project.projectImg.data.length > 0" :src="project.projectImg.data[0].attributes.url.startsWith('http') ? project.projectImg.data[0].attributes.url : project.projectImg.data[0].attributes.url" :alt="project.projectTitle" />
         </div>
@@ -69,7 +63,7 @@ const props = defineProps({
     }
     .card {
       margin: 72px 0;
-      margin-top: 36px;
+      margin-top: 24px;
       border-radius: 16px;
       box-shadow: 0px 8px 16px #0443171a;
       transition: all 0.3s ease;
