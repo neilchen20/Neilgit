@@ -24,7 +24,7 @@ export const useProjectsStore = defineStore('projects', () => {
       attributes: {
         projectTitle: "TaiwanPlus",
         projectDescription: "參與既有專案的擴充開發，負責在 Vue 2 環境下新增一個完整頁面，包含切版與 API 串接。確保 UI/UX 一致性，並與現有系統整合，提升專案的可擴展性與功能完整度。",
-        projectLink: "https://taiwanplus.com",
+        projectLink: "https://www.taiwanplus.com/press/latest-updates",
         projectDate: "2023-10-01",
         projectHighLight: false,
         projectSkill: "Vue,HTML, CSS, JavaScript",
