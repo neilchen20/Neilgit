@@ -11,7 +11,7 @@
           <li v-html="project.attributes.projectSkill"></li>
         </ul>
         <div class="w-100 text-end mt-3">
-          <a :href="project.attributes.projectLink" target="_blank" class="btn btn-sm btn-outline-secondary">View</a>
+          <a v-if="project.attributes.projectLink" :href="project.attributes.projectLink" target="_blank" class="btn btn-sm btn-outline-secondary">查看網站</a>
         </div>
       </li>
     </ul>
