@@ -35,11 +35,13 @@ import { useProjectsStore } from '../stores/ProjectsStore.js'
 
 const projectsStore = useProjectsStore()
 
+if (projectsStore.ProjectsData.length === 0) {
+  projectsStore.setProjects(projectsStore.mockData)
+}
+
 onMounted(async () => {
   try {
-    const response = await axios.get(
-      'https://admin.neilc.me/api/projects?populate=*'
-    )
+    const response = await axios.get('https://admin.neilc.me/api/projects?populate=*')
     const data = response.data.data
     projectsStore.setProjects(data) // 使用 Pinia store 設置項目數據
   } catch (error) {
@@ -55,6 +57,12 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+#home,
+#featured-projects,
+#projects {
+  scroll-margin-top: 88px;
+}
+
 #home {
   .row {
     gap: 90px;

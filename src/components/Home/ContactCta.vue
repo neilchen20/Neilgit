@@ -7,12 +7,8 @@
             <span class="availability__dot" aria-hidden="true"></span>
             Open to frontend opportunities
           </span>
-          <h2 id="contact-title" class="fw-bold">
-            正在尋找能把複雜流程<br class="d-none d-md-block" />做穩的前端工程師嗎？
-          </h2>
-          <p>
-            我具備 Vue、TypeScript、PWA 與企業系統開發經驗，歡迎聊聊職缺或合作機會。
-          </p>
+          <h2 id="contact-title" class="fw-bold">正在尋找能把複雜流程<br class="d-none d-md-block" />做穩的前端工程師嗎？</h2>
+          <p>我具備 Vue、TypeScript、PWA 與企業系統開發經驗，歡迎聊聊職缺或合作機會。</p>
         </div>
 
         <div class="contact-actions" aria-label="聯絡方式">
@@ -20,34 +16,11 @@
             寄信給我
             <span aria-hidden="true">↗</span>
           </a>
-          <a
-            v-if="resumeUrl"
-            class="contact-button contact-button--secondary"
-            :href="resumeUrl"
-            download
-          >
-            下載履歷
-            <span aria-hidden="true">↓</span>
-          </a>
-          <span
-            v-else
-            class="contact-button contact-button--secondary contact-button--disabled"
-            aria-disabled="true"
-            title="加入履歷 PDF 後即可啟用"
-          >
-            履歷準備中
-          </span>
         </div>
       </div>
     </div>
   </section>
 </template>
-
-<script setup>
-// 將去除敏感資訊的履歷放到 public/resume/Neil-Chen-Resume.pdf 後，
-// 把此值改為 '/resume/Neil-Chen-Resume.pdf' 即可啟用下載按鈕。
-const resumeUrl = ''
-</script>
 
 <style lang="scss" scoped>
 .contact-section {
@@ -68,9 +41,7 @@ const resumeUrl = ''
   padding: 64px;
   overflow: hidden;
   border-radius: 28px;
-  background:
-    radial-gradient(circle at 92% 12%, rgb(123 97 255 / 42%), transparent 32%),
-    linear-gradient(135deg, #151927 0%, #222a42 100%);
+  background: radial-gradient(circle at 92% 12%, rgb(123 97 255 / 42%), transparent 32%), linear-gradient(135deg, #151927 0%, #222a42 100%);
   color: #fff;
   box-shadow: 0 24px 64px rgb(20 25 40 / 20%);
 
@@ -82,7 +53,9 @@ const resumeUrl = ''
     height: 360px;
     border: 1px solid rgb(255 255 255 / 12%);
     border-radius: 50%;
-    box-shadow: 0 0 0 44px rgb(255 255 255 / 4%), 0 0 0 88px rgb(255 255 255 / 3%);
+    box-shadow:
+      0 0 0 44px rgb(255 255 255 / 4%),
+      0 0 0 88px rgb(255 255 255 / 3%);
     content: '';
     pointer-events: none;
   }
@@ -151,7 +124,10 @@ const resumeUrl = ''
   border-radius: 12px;
   font-weight: 700;
   text-decoration: none;
-  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
 
   &:focus-visible {
     outline: 3px solid #9bb1ff;

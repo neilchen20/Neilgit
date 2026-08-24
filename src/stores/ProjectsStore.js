@@ -47,7 +47,7 @@ export const useProjectsStore = defineStore('projects', () => {
       id: 2,
       attributes: {
         projectTitle: "2023誠品年度閱讀報告",
-        projectDescription: "和團隊協作的切版案子。",
+        projectDescription: "參與 2023、2024 誠品年度閱讀報告活動網站前端開發，依據品牌視覺與設計稿作長頁式內容、RWD 響應式版面及互動效果，將年度閱讀趨勢、排行榜與豐富視覺素材整合為具敘事感的網站體驗。",
         projectLink: "https://events.eslite.com/2023/231205-2023report/index.html",
         projectDate: "2023-12-01",
         projectHighLight: false,
@@ -71,8 +71,8 @@ export const useProjectsStore = defineStore('projects', () => {
       id: 3,
       attributes: {
         projectTitle: "2024誠品年度閱讀報告",
-        projectDescription: "和團隊協作的切版案子。",
-        projectLink: "https://events.eslite.com/campaign/readingreport/index.html",
+        projectDescription: "參與 2023、2024 誠品年度閱讀報告活動網站前端開發，依據品牌視覺與設計稿作長頁式內容、RWD 響應式版面及互動效果，將年度閱讀趨勢、排行榜與豐富視覺素材整合為具敘事感的網站體驗。",
+        projectLink: "",
         projectDate: "2024-12-10",
         projectHighLight: false,
         projectSkill: "HTML, CSS, Bootstrap, JavaScript, Swiper.js, GSAP.js, AOS.js",
@@ -95,11 +95,11 @@ export const useProjectsStore = defineStore('projects', () => {
       id: 4,
       attributes: {
         projectTitle: "凌羣電腦智慧零售雲",
-        projectDescription: "入職科技公司後第一個切版的案子。",
+        projectDescription: "參與凌羣電腦智慧零售雲網站前端開發，依據設計稿實作 RWD 響應式版面與前端互動效果，整合電商平台、自動化行銷、OMO 虛實整合及 AI 應用等多項服務內容，打造資訊層級清楚且具品牌一致性的企業形象網站。",
         projectLink: "https://retail.syscom.com.tw/",
         projectDate: "2023-08-22",
         projectHighLight: false,
-        projectSkill: "HTML, CSS, Bootstrap, JavaScript",
+        projectSkill: "HTML, CSS, Bootstrap, JavaScript, Swiper, AOS",
         projectImg: {
           data: [
             {
@@ -238,6 +238,7 @@ export const useProjectsStore = defineStore('projects', () => {
     {
       id: 10,
       attributes: {
+        id: 10,
         projectTitle: "遠傳雲端醫療資訊系統",
         projectDescription: "以 Vue 3、TypeScript 與 Quasar Framework 開發的雲端醫療資訊系統，涵蓋掛號、看診、醫囑處方、醫師排班、藥品管理、檢驗及診所基本設定等醫療作業流程。主要負責既有功能維護與擴充、REST API 串接、表單與資料驗證、PWA Offline 功能，以及跨頁狀態與操作流程優化；並針對離線環境中的病患敏感資料實作 IndexedDB AES 加密儲存機制。",
         projectLink: "https://enterprise.fetnet.net/content/ebu/tw/solution/5g-innovation/innovation/5g-telemedicine/cloudHIS.html?WTshort_k=P-U5SOxX0XX1&WTchannel=WEB&CMP&gad_campaignid=21098300791&gbraid=0AAAAAC7ZfXCwmyHFDiIwRoh78hXK57SkC",
