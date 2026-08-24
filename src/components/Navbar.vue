@@ -4,9 +4,9 @@
       <RouterLink class="navbar-brand playwrite-dk-uloopet-400" :to="{ name: 'Home', hash: '#home' }" aria-label="Neil Chen 首頁"> Neil.<span class="brand-role"> fe dev</span> </RouterLink>
 
       <div class="navbar-nav" aria-label="頁面區塊">
-        <RouterLink v-for="item in navItems" :key="item.id" class="nav-link" :class="{ active: activeSection === item.id }" :to="{ name: 'Home', hash: item.hash }" :aria-current="activeSection === item.id ? 'location' : undefined" @click="setActiveSection(item.id)">
+        <a v-for="item in navItems" :key="item.id" :href="`/${item.hash}`" class="nav-link" :class="{ 'nav-link--current': activeSection === item.id }" :aria-current="activeSection === item.id ? 'location' : undefined" @click="navigateToSection($event, item)">
           {{ item.label }}
-        </RouterLink>
+        </a>
       </div>
     </div>
   </nav>
@@ -14,10 +14,11 @@
 
 <script setup>
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
-const activeSection = ref(route.name === 'Home' ? 'home' : 'projects')
+const router = useRouter()
+const activeSection = ref('home')
 const isScrolled = ref(false)
 
 const navItems = [
@@ -35,51 +36,83 @@ const sectionToNav = {
   contact: 'contact',
 }
 
-let sectionObserver
+const sectionIds = Object.keys(sectionToNav)
 let scrollFrame
+let navigationTimer
+let isNavigating = false
 
-function disconnectObserver() {
-  sectionObserver?.disconnect()
-  sectionObserver = undefined
-}
-
-async function observeHomeSections() {
-  disconnectObserver()
-
-  if (route.name !== 'Home') {
+function syncRouteSection() {
+  if (route.name && route.name !== 'Home') {
     activeSection.value = 'projects'
     return
   }
 
-  await nextTick()
-
-  const sections = Object.keys(sectionToNav)
-    .map((id) => document.getElementById(id))
-    .filter(Boolean)
-
-  sectionObserver = new IntersectionObserver(
-    (entries) => {
-      const visibleEntry = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-
-      if (visibleEntry) {
-        activeSection.value = sectionToNav[visibleEntry.target.id]
-      }
-    },
-    {
-      rootMargin: '-24% 0px -58% 0px',
-      threshold: [0, 0.1, 0.25, 0.5],
-    },
-  )
-
-  sections.forEach((section) => sectionObserver.observe(section))
+  activeSection.value = sectionToNav[route.hash.replace('#', '')] ?? 'home'
 }
 
-function setActiveSection(sectionId) {
-  activeSection.value = sectionId
+function getActiveSectionFromScroll() {
+  if (route.name && route.name !== 'Home') {
+    return 'projects'
+  }
+
+  const navbarHeight = document.querySelector('.site-navbar')?.offsetHeight ?? 72
+  const activationOffset = Math.max(navbarHeight + 24, window.innerHeight * 0.35)
+  const activationPosition = window.scrollY + activationOffset
+  let currentSection = 'home'
+
+  sectionIds.forEach((sectionId) => {
+    const section = document.getElementById(sectionId)
+
+    if (!section) {
+      return
+    }
+
+    const sectionTop = section.getBoundingClientRect().top + window.scrollY
+
+    if (sectionTop <= activationPosition) {
+      currentSection = sectionToNav[sectionId]
+    }
+  })
+
+  return currentSection
+}
+
+function finishNavigation() {
+  window.clearTimeout(navigationTimer)
+  navigationTimer = undefined
+  isNavigating = false
+}
+
+async function navigateToSection(event, item) {
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    return
+  }
+
+  event.preventDefault()
+  window.clearTimeout(navigationTimer)
+  isNavigating = true
+  activeSection.value = item.id
+
+  if (route.name === 'Home' && route.hash === item.hash) {
+    await nextTick()
+    document.querySelector(item.hash)?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  } else {
+    await router.push({ name: 'Home', hash: item.hash })
+  }
+
+  navigationTimer = window.setTimeout(finishNavigation, 2000)
 }
 
 function updateScrollState() {
   isScrolled.value = window.scrollY > 24
+
+  if (!isNavigating) {
+    activeSection.value = getActiveSectionFromScroll()
+  }
+
   scrollFrame = undefined
 }
 
@@ -91,17 +124,28 @@ function handleScroll() {
   scrollFrame = requestAnimationFrame(updateScrollState)
 }
 
-watch(() => route.fullPath, observeHomeSections)
+function handleScrollEnd() {
+  if (isNavigating) {
+    finishNavigation()
+  }
+}
+
+watch(
+  () => [route.name, route.hash],
+  syncRouteSection,
+  { immediate: true },
+)
 
 onMounted(() => {
-  observeHomeSections()
-  updateScrollState()
+  isScrolled.value = window.scrollY > 24
   window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('scrollend', handleScrollEnd)
 })
 
 onBeforeUnmount(() => {
-  disconnectObserver()
   window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('scrollend', handleScrollEnd)
+  window.clearTimeout(navigationTimer)
 
   if (scrollFrame !== undefined) {
     cancelAnimationFrame(scrollFrame)
@@ -221,7 +265,7 @@ onBeforeUnmount(() => {
     outline-offset: 2px;
   }
 
-  &.active {
+  &.nav-link--current {
     color: #315efb;
 
     &::after {
