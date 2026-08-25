@@ -3,7 +3,13 @@
     <h2 class="text-center mb-5 fw-bold">All Projects</h2>
     <ul class="timeline">
       <li v-for="project in sortedProjects" :key="project.id" class="event" :data-date="project.attributes.projectDate" data-aos="fade-up">
-        <img v-if="project.attributes.projectImg.data.length > 0" :src="project.attributes.projectImg.data[0].attributes.url.startsWith('http') ? project.attributes.projectImg.data[0].attributes.url : project.attributes.projectImg.data[0].attributes.url" :alt="project.attributes.projectTitle" />
+        <img
+          v-if="project.attributes.projectImg.data.length > 0"
+          :src="project.attributes.projectImg.data[0].attributes.url.startsWith('http') ? project.attributes.projectImg.data[0].attributes.url : project.attributes.projectImg.data[0].attributes.url"
+          :alt="project.attributes.projectTitle"
+          loading="lazy"
+          decoding="async"
+        />
         <h4 class="mb-2 fw-bold d-none d-lg-block">{{ project.attributes.projectTitle }}</h4>
         <h5 class="mb-2 fw-bold d-lg-none">{{ project.attributes.projectTitle }}</h5>
         <p>{{ project.attributes.projectDescription }}</p>

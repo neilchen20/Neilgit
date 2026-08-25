@@ -6,7 +6,13 @@
     <div class="d-flex flex-column flex-lg-row gap-4 gap-lg-3 justify-content-center">
       <div v-for="(project, index) in ProjectsHighLight" :key="project.projectTitle" class="card shadow-sm mb-0" data-aos="fade-up" :data-aos-delay="index * 150">
         <div class="card-img-top">
-          <img v-if="project.projectImg.data.length > 0" :src="project.projectImg.data[0].attributes.url.startsWith('http') ? project.projectImg.data[0].attributes.url : project.projectImg.data[0].attributes.url" :alt="project.projectTitle" />
+          <img
+            v-if="project.projectImg.data.length > 0"
+            :src="project.projectImg.data[0].attributes.url.startsWith('http') ? project.projectImg.data[0].attributes.url : project.projectImg.data[0].attributes.url"
+            :alt="project.projectTitle"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         <div class="card-body">
           <div>
