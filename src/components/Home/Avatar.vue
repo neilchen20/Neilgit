@@ -33,8 +33,7 @@ const avatarUrl = new URL('../../assets/img/IMG_0873.webp', import.meta.url).hre
     }
     #avatar {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      transform: scale(1.4);
     }
   }
 }
