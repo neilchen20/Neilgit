@@ -28,9 +28,6 @@ import Intro from '../components/Home/Intro.vue'
 import Skills from '../components/Home/Skills.vue'
 import ContactCta from '../components/Home/ContactCta.vue'
 import FeaturedProjects from '../components/Projects/FeaturedProjects.vue'
-import { nextTick, onMounted } from 'vue'
-import axios from 'axios'
-import AOS from 'aos'
 import { useProjectsStore } from '../stores/ProjectsStore.js'
 
 const projectsStore = useProjectsStore()
@@ -38,22 +35,6 @@ const projectsStore = useProjectsStore()
 if (projectsStore.ProjectsData.length === 0) {
   projectsStore.setProjects(projectsStore.mockData)
 }
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('https://admin.neilc.me/api/projects?populate=*')
-    const data = response.data.data
-    projectsStore.setProjects(data) // 使用 Pinia store 設置項目數據
-  } catch (error) {
-    console.error('Error fetching data:', error)
-
-    // 使用 mockData 作為備用資料
-    projectsStore.setProjects(projectsStore.mockData) // 使用 Pinia store 中的假資料
-  } finally {
-    await nextTick()
-    AOS.refreshHard()
-  }
-})
 </script>
 
 <style lang="scss" scoped>

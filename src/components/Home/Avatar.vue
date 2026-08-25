@@ -1,12 +1,12 @@
 <template>
   <div id="img-container">
     <div class="img-border">
-      <img :src="avatarUrl" alt="Avatar" id="avatar" />
+      <img :src="avatarUrl" alt="Neil Chen" id="avatar" width="1200" height="1200" decoding="async" />
     </div>
   </div>
 </template>
 <script setup lang="js">
-const avatarUrl = new URL('../../assets/img/IMG_0873.JPG', import.meta.url).href
+const avatarUrl = new URL('../../assets/img/Avatar.webp', import.meta.url).href
 </script>
 <style lang="scss" scoped>
 #img-container {
@@ -24,16 +24,17 @@ const avatarUrl = new URL('../../assets/img/IMG_0873.JPG', import.meta.url).href
   .img-border {
     border-radius: 50%;
     border: 3px solid #4868f8;
-    max-width: 124px;
-    max-height: 124px;
+    width: 124px;
+    height: 124px;
     overflow: hidden;
     @media (max-width: 991px) {
-      max-width: 96px;
-      max-height: 96px;
+      width: 96px;
+      height: 96px;
     }
     #avatar {
       width: 100%;
-      transform: scale(1.4);
+      height: 100%;
+      object-fit: cover;
     }
   }
 }
