@@ -1,12 +1,12 @@
 <template>
   <div id="img-container">
     <div class="img-border">
-      <img :src="avatarUrl" alt="Neil Chen" id="avatar" width="1200" height="1200" decoding="async" />
+      <img :src="avatarUrl" alt="Neil Chen" id="avatar" width="600" height="900" decoding="async" />
     </div>
   </div>
 </template>
 <script setup lang="js">
-const avatarUrl = new URL('../../assets/img/Avatar.webp', import.meta.url).href
+const avatarUrl = new URL('../../assets/img/IMG_0873.webp', import.meta.url).href
 </script>
 <style lang="scss" scoped>
 #img-container {
