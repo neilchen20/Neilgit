@@ -3,7 +3,7 @@
     <div class="col-md-4 d-flex flex-column align-items-center">
       <a href="mailto:neilchnn@gmail.com">neilchnn@gmail.com</a>
       <span class="mb-3 mb-md-0 text-body-secondary">© {{ currentYear }} Neil Chen</span>
-      <img :src="counterUrl" alt="Counter" />
+      <img :src="counterUrl" alt="網站瀏覽人次" width="45" height="20" loading="lazy" decoding="async" />
     </div>
   </footer>
 </template>
