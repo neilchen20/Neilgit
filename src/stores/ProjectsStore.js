@@ -191,7 +191,7 @@ export const useProjectsStore = defineStore('projects', () => {
       id: 8,
       attributes: {
         projectTitle: "翔翼通訊",
-        projectDescription: "該網站使用 Vue 進行前端切版，包含靜態頁面、會員系統、產品頁、購物車系統等核心頁面。專案中的動態頁面 (會員、購物車) 以 mock data 先行開發，確保 UI/UX 設計與互動流暢度，後續可交由後端無縫銜接 API。",
+        projectDescription: "該網站使用 Vue 進行前端切版，包含靜態頁面、會員系統、產品頁、購物車系統等核心頁面。專案中的動態頁面 (會員、購物車) 以 mock data 先行開發，並確保 UI/UX 設計與互動流暢度。",
         projectLink: "https://www.aerobile.com/",
         projectDate: "2025-02-05",
         projectHighLight: true,
