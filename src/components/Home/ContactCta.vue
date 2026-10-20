@@ -12,7 +12,7 @@
         </div>
 
         <div class="contact-actions" aria-label="聯絡方式">
-          <a class="contact-button contact-button--primary" href="mailto:neilchnn@gmail.com">
+          <a class="contact-button contact-button--primary" href="mailto:hello@neilchen.dev">
             寄信給我
             <span aria-hidden="true">↗</span>
           </a>
